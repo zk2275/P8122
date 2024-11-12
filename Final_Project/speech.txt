@@ -1,0 +1,12 @@
+Good morning, everyone. I'm Zhuodiao, part of the team led by Shaolei Ma, with my colleagues Peng Su, Yilei Yang. Today, I'm excited to share our latest findings in unraveling the complexities of cellular behavior through single-cell gene expression analysis.
+
+Let's first take a look at our data. So, we've got 716 cells and 558 genes per cell. The rows stand for cells, and the columns represent genes. U can directly take the columns as gene expression. The higher the score, the more the gene is expressed in the cell. However, specifically, it's scRNA-seq that measures gene expression at the individual cell level and enables understanding of cell functions and heterogeneity.
+
+We started by applying Principal Component Analysis to our raw data in this analysis. After this, we were suggested to fit a Gaussian-Mixture model to their principal component scores. Next, we designed and implemented an EM algorithm to estimate the model and identify the cell clusters. Once we identified the clusters, we combined the cluster labels with the raw data. Finally, we explored gene-expression signatures in each of them and found out which genes were essential to differentiate the clusters.
+
+PCA is more useful with high dimensions, and it's hard to see through a data cloud. To illustrate the idea, I put a subset example here. So, when we choose three genes, we can have a plot like this. The original data are plotted in 3D, but you can project the data into 2D through a transformation no different than finding a camera angle. I mean, you can rotate the axes to find the best angle. The PCA transformation ensures that the horizontal axis PC1 has the most variation, the vertical axis PC2 the second-most, and the third axis PC3 the least. PC3 is the one we drop. 
+
+Last, we selected principal components based on the scree plot.
+
+That's my part, and let's welcome Shaolei and Yilei to introduce the GMM and EM estimation.
+

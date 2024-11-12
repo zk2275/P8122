@@ -1,0 +1,101 @@
+---
+title: "Group Projects on EM algorithms"
+output:
+  pdf_document: default
+  html_notebook: default
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+## Project 3: Single-Cell gene expressions
+
+ScRNA-seq is a recent technological breakthrough in biology that measures gene expression levels of thousands of genes at the individual cell level. This technology has significantly advanced our understanding of cell functions.
+
+Cell heterogeneity, the phenomenon of varied gene expression levels in individual cells of the same type, is a complex issue. However, clustering analysis, a powerful tool, can help us navigate this complexity and identify subtypes in cases of cell heterogeneity.
+
+The file ss.csv contains gene expression levels of 558 genes (columns) from 716 cells (rows) of breast cancer tumors.
+
+In this analysis, we will start by applying Principal Component Analysis to our scRNA-seq data. The goal here is to determine the number of principal components needed to capture the variability of gene expressions. To achieve this, we will use the function 'prcomp' from the R package 'stats'.
+
+After identifying the major principal components, you need to fit a Gaussian-Mixture model to their principal component scores. Make sure to use the number of components you selected in Q1. Next, design and implement an EM algorithm to estimate the model and identify the cell clusters. Once you have identified the clusters, explore gene-expression signatures in each of them. Find out which genes are important to differentiate the clusters and report your findings.
+
+
+```{r}
+# Load necessary libraries
+library(stats)  # For PCA
+library(ggplot2)  # For plotting
+library(mclust)  # For Gaussian Mixture Model
+
+# Load the data
+data <- read.csv("ss.csv")
+
+# Apply PCA
+pca_results <- prcomp(data, scale. = TRUE)
+
+# Plot the scree plot to determine the number of components to retain
+scree_plot <- data.frame(Comp = 1:length(pca_results$sdev), Variance = pca_results$sdev^2 / sum(pca_results$sdev^2))
+ggplot(scree_plot, aes(x = Comp, y = Variance)) +
+  geom_line() +
+  geom_point() +
+  theme_minimal()
+
+# Assuming you choose k principal components based on the plot
+k <- 4  # Adjust based on your scree plot analysis
+pca_scores <- pca_results$x[, 1:k]
+
+# Fit a Gaussian Mixture Model
+gmm_results <- Mclust(pca_scores, G = 1:10)  # Test several numbers of clusters
+summary(gmm_results)
+plot(gmm_results, what = "classification")
+
+# Analyze the clusters
+# Identify which genes are important for each cluster by examining means or other statistics within each cluster
+# Adjust according to specific needs of your analysis
+
+
+```
+
+
+```{r}
+# Assuming 'gmm_results' is your fitted GMM model from the previous step
+# Select the best model based on BIC
+summary(gmm_results)
+plot(gmm_results, what = "BIC")
+
+# Best model based on BIC
+best_model <- gmm_results$parameters$mean
+
+# Classification of data into clusters
+clusters <- gmm_results$classification
+cluster_table <- table(clusters)
+print(cluster_table)
+
+# Visualize the clusters (using first two principal components for simplicity)
+library(ggplot2)
+cluster_df <- data.frame(PC1 = pca_scores[,1], PC2 = pca_scores[,2], Cluster = as.factor(clusters))
+ggplot(cluster_df, aes(x = PC1, y = PC2, color = Cluster)) +
+  geom_point(alpha = 0.5) +
+  theme_minimal() +
+  labs(title = "Cluster Visualization with PCA Scores", x = "PC1", y = "PC2")
+
+# Examine the cluster means to interpret the clusters
+cluster_means <- aggregate(pca_scores, by = list(clusters), FUN = mean)
+colnames(cluster_means)[1] <- "Cluster"
+print(cluster_means)
+
+# Detailed examination of gene expressions for each cluster
+# Assuming 'data' is the original gene expression data
+for (i in unique(clusters)) {
+  cat("Cluster", i, "mean expression:\n")
+  cluster_data <- data[clusters == i, ]
+  print(colMeans(cluster_data, na.rm = TRUE))
+  cat("\n")
+}
+
+# Optional: Save the cluster assignments
+# write.csv(cluster_df, "cluster_assignments.csv", row.names = FALSE)
+
+
+```
+

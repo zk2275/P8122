@@ -1,0 +1,430 @@
+---
+title: "Gene_expression"
+author: "Zhuodiao Kuang"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r}
+
+# Load necessary libraries
+library(mclust)  # For Gaussian Mixture Model
+library(dplyr)   # For data manipulation
+
+# Load the data
+data <- read.csv("ss.csv")
+
+# Apply PCA
+pca_results <- prcomp(data, scale. = TRUE)
+
+# Assuming you've decided on the number of components based on the scree plot
+# Let's say 4 principal components are retained
+pca_scores <- pca_results$x[, 1:4]
+
+# Fit a Gaussian Mixture Model to PCA scores with the selected number of clusters, e.g., 10
+gmm_results <- Mclust(pca_scores, G = 3)
+clusters <- gmm_results$classification
+
+# Attach cluster assignments to the original data
+data_with_clusters <- cbind(data, Cluster = as.factor(clusters))
+
+# Calculate mean expression per gene per cluster
+gene_means_per_cluster <- data_with_clusters %>%
+  group_by(Cluster) %>%
+  summarise(across(everything(), mean, na.rm = TRUE))
+
+save(gene_means_per_cluster, file = "gene_means_per_cluster.RData")
+```
+
+### Including scaling
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(stats)
+library(scales)
+
+# Load the data
+data_with_clusters <- read.csv("new_cluster.csv")
+
+# Exclude the cluster column and scale gene expressions
+data_scaled <- data_with_clusters %>%
+  select(-Cluster) %>%
+  mutate(across(everything(), scale))
+
+# Add the cluster column back to the scaled data
+data_scaled$Cluster <- data_with_clusters$Cluster
+
+# Perform ANOVA for each gene and collect p-values
+anova_results <- sapply(names(data_scaled)[1:(ncol(data_scaled)-1)], function(gene) {
+  formula <- as.formula(paste(gene, "~ Cluster"))
+  anova_result <- aov(formula, data = data_scaled)
+  summary(anova_result)[[1]]["Pr(>F)"][[1]][1]
+})
+
+# Create a data frame of p-values
+p_values <- data.frame(Gene = names(anova_results), P_Value = anova_results)
+
+# Adjust p-values for multiple testing using the Benjamini-Hochberg method
+p_values$Adjusted_P_Value <- p.adjust(p_values$P_Value, method = "BH")
+
+# Filter out non-significant genes (e.g., adjusted P >= 0.05)
+significant_genes <- filter(p_values, Adjusted_P_Value < 0.05)
+
+# Filter the scaled data to keep only significant genes
+data_filtered <- select(data_scaled, one_of(significant_genes$Gene), Cluster)
+
+# Save the filtered data
+write.csv(data_filtered, "filtered_significant_genes.csv", row.names = FALSE)
+
+# Display the filtered genes
+print(head(data_filtered))
+
+```
+
+### up and down regulated
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(stats)
+
+# Load the data
+data_with_clusters <- read.csv("filtered_significant_genes.csv")
+
+# Perform ANOVA for each gene to assess variance across clusters
+anova_results <- data.frame(Gene = colnames(data_with_clusters)[1:(ncol(data_with_clusters)-1)], P_Value = NA, Mean_Cluster1 = NA, Mean_Cluster2 = NA, Mean_Cluster3 = NA)
+
+for (i in 1:nrow(anova_results)) {
+  gene <- anova_results$Gene[i]
+  formula <- as.formula(paste(gene, "~ Cluster"))
+  anova_result <- aov(formula, data = data_with_clusters)
+  anova_results$P_Value[i] <- summary(anova_result)[[1]]["Pr(>F)"][[1]][1]
+  
+  # Calculate mean expressions per cluster for the gene
+  means <- aggregate(formula, data = data_with_clusters, FUN = mean)
+  anova_results$Mean_Cluster1[i] <- means[means$Cluster == 1, 2]
+  anova_results$Mean_Cluster2[i] <- means[means$Cluster == 2, 2]
+  anova_results$Mean_Cluster3[i] <- means[means$Cluster == 3, 2]
+}
+
+# Adjust p-values for multiple testing using the Benjamini-Hochberg method
+anova_results$Adjusted_P_Value <- p.adjust(anova_results$P_Value, method = "BH")
+
+# Identify max and min mean expression values to determine up and down regulation
+anova_results$Upregulated_In <- apply(anova_results[,c("Mean_Cluster1", "Mean_Cluster2", "Mean_Cluster3")], 1, function(x) which.max(x))
+anova_results$Downregulated_In <- apply(anova_results[,c("Mean_Cluster1", "Mean_Cluster2", "Mean_Cluster3")], 1, function(x) which.min(x))
+
+# Filter out non-significant genes (adjusted P >= 0.05)
+significant_genes <- anova_results %>% 
+  filter(Adjusted_P_Value < 0.05) %>%
+  arrange(Adjusted_P_Value)
+
+# Translate numerical cluster IDs to names
+significant_genes$Upregulated_In <- sapply(significant_genes$Upregulated_In, function(x) paste("Cluster", x, sep=""))
+significant_genes$Downregulated_In <- sapply(significant_genes$Downregulated_In, function(x) paste("Cluster", x, sep=""))
+
+# Save and print the results
+write.csv(significant_genes, "significant_genes_anova.csv", row.names = FALSE)
+print(significant_genes)
+
+
+```
+
+
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+
+# Load the data
+data_with_clusters <- read.csv("filtered_significant_genes.csv")
+
+# Compute mean expression values for each gene in each cluster
+gene_means <- data_with_clusters %>%
+  group_by(Cluster) %>%
+  summarise(across(where(is.numeric), mean, na.rm = TRUE), .groups = 'drop')
+
+# Prepare data for comparison
+# Reshape data for easier comparison by making genes into rows and clusters into columns
+library(tidyr)
+gene_means_long <- pivot_longer(gene_means, -Cluster, names_to = "Gene", values_to = "Expression")
+
+# Spread the long data to wide format to prepare for comparison
+gene_means_wide <- pivot_wider(gene_means_long, names_from = Cluster, values_from = Expression)
+
+# Function to determine up and down regulation
+compare_expression <- function(row) {
+  max_expr <- max(row[-1], na.rm = TRUE)
+  min_expr <- min(row[-1], na.rm = TRUE)
+  max_cluster <- names(row[-1])[which.max(row[-1])]
+  min_cluster <- names(row[-1])[which.min(row[-1])]
+  c(upregulated_in = max_cluster, downregulated_in = min_cluster)
+}
+
+# Apply the function to each row
+regulation_results <- apply(gene_means_wide, 1, compare_expression)
+
+# Convert results to a data frame
+regulation_df <- data.frame(Gene = gene_means_wide$Gene, t(matrix(unlist(regulation_results), nrow = 2, byrow = TRUE)))
+names(regulation_df) <- c("Gene", "Upregulated_in", "Downregulated_in")
+
+# Save and print the results
+write.csv(regulation_df, "gene_regulation_across_clusters.csv", row.names = FALSE)
+print(regulation_df)
+
+```
+
+### Cluster 1
+
+```{r}
+# Load the data
+data_with_clusters <- read.csv("new_cluster.csv")
+
+# Isolate Cluster 1 and other clusters
+cluster1_data <- data_with_clusters %>% filter(Cluster == 1)
+other_clusters_data <- data_with_clusters %>% filter(Cluster != 1)
+
+# Create a combined dataset for comparison
+combined_data <- rbind(cluster1_data %>% mutate(Group = 'Cluster1'),
+                       other_clusters_data %>% mutate(Group = 'OtherClusters'))
+
+# Perform ANOVA for each gene to see if there's a significant difference between Cluster 1 and others
+anova_results <- data.frame(Gene = colnames(combined_data)[1:(ncol(combined_data)-2)], P_Value = NA)
+
+for (i in 1:nrow(anova_results)) {
+  gene <- anova_results$Gene[i]
+  formula <- as.formula(paste(gene, "~ Group"))
+  anova_result <- aov(formula, data = combined_data)
+  anova_results$P_Value[i] <- as.numeric(summary(anova_result)[[1]]["Pr(>F)"][[1]][1])
+}
+
+# Adjust p-values for multiple testing using the Benjamini-Hochberg method
+anova_results$Adjusted_P_Value <- p.adjust(anova_results$P_Value, method = "bonferroni")
+
+# Filter genes with significant differences
+significant_genes_cluster1 <- anova_results %>% 
+  filter(Adjusted_P_Value < 0.01) %>%
+  arrange(Adjusted_P_Value)
+
+# Save the results
+write.csv(as.matrix(significant_genes_cluster1), "significant_genes_cluster1.csv", row.names = FALSE)
+
+# Display the results
+print(significant_genes_cluster1)
+```
+
+# Cluster 2
+
+```{r}
+
+# Isolate Cluster 2 and other clusters
+cluster2_data <- data_with_clusters %>% filter(Cluster == 2)
+other_clusters_data <- data_with_clusters %>% filter(Cluster != 2)
+
+# Create a combined dataset for comparison
+combined_data <- rbind(cluster2_data %>% mutate(Group = 'Cluster2'),
+                       other_clusters_data %>% mutate(Group = 'OtherClusters'))
+
+# Perform ANOVA for each gene to see if there's a significant difference between Cluster 2 and others
+anova_results <- data.frame(Gene = colnames(combined_data)[1:(ncol(combined_data)-2)], P_Value = NA)
+
+for (i in 1:nrow(anova_results)) {
+  gene <- anova_results$Gene[i]
+  formula <- as.formula(paste(gene, "~ Group"))
+  anova_result <- aov(formula, data = combined_data)
+  anova_results$P_Value[i] <- as.numeric(summary(anova_result)[[1]]["Pr(>F)"][[1]][1])
+}
+
+# Adjust p-values for multiple testing using the Benjamini-Hochberg method
+anova_results$Adjusted_P_Value <- p.adjust(anova_results$P_Value, method = "bonferroni")
+
+# Filter genes with significant differences
+significant_genes_cluster2 <- anova_results %>% 
+  filter(Adjusted_P_Value < 0.01) %>%
+  arrange(Adjusted_P_Value)
+
+# Save the results
+write.csv(as.matrix(significant_genes_cluster2), "significant_genes_cluster2.csv", row.names = FALSE)
+
+# Display the results
+print(significant_genes_cluster2)
+
+```
+
+
+# Cluster 3
+
+```{r}
+# Isolate Cluster 3 and other clusters
+cluster1_data <- data_with_clusters %>% filter(Cluster == 3)
+other_clusters_data <- data_with_clusters %>% filter(Cluster != 3)
+
+# Create a combined dataset for comparison
+combined_data <- rbind(cluster1_data %>% mutate(Group = 'Cluster3'),
+                       other_clusters_data %>% mutate(Group = 'OtherClusters'))
+
+# Perform ANOVA for each gene to see if there's a significant difference between Cluster 3 and others
+anova_results <- data.frame(Gene = colnames(combined_data)[1:(ncol(combined_data)-2)], P_Value = NA)
+
+for (i in 1:nrow(anova_results)) {
+  gene <- anova_results$Gene[i]
+  formula <- as.formula(paste(gene, "~ Group"))
+  anova_result <- aov(formula, data = combined_data)
+  anova_results$P_Value[i] <- as.numeric(summary(anova_result)[[1]]["Pr(>F)"][[1]][1])
+}
+
+# Adjust p-values for multiple testing using the Benjamini-Hochberg method
+anova_results$Adjusted_P_Value <- p.adjust(anova_results$P_Value, method = "bonferroni")
+
+# Filter genes with significant differences
+significant_genes_cluster3 <- anova_results %>% 
+  filter(Adjusted_P_Value < 0.01) %>%
+  arrange(Adjusted_P_Value)
+
+# Save the results
+write.csv(as.matrix(significant_genes_cluster3), "significant_genes_cluster3.csv", row.names = FALSE)
+
+# Display the results
+print(significant_genes_cluster3)
+
+```
+
+# Other coding
+
+```{r}
+# Load the data
+data_with_clusters <- read.csv("new_cluster.csv")
+
+# Perform ANOVA for each gene across the clusters and calculate p-values
+anova_results <- data.frame(Gene = colnames(data_with_clusters)[1:(ncol(data_with_clusters)-1)], P_Value = NA)
+
+# Applying ANOVA to each gene
+for (i in 1:nrow(anova_results)) {
+  gene <- anova_results$Gene[i]
+  formula <- as.formula(paste(gene, "~ Cluster"))
+  anova_result <- aov(formula, data = data_with_clusters)
+  anova_results$P_Value[i] <- summary(anova_result)[[1]]["Pr(>F)"][1]
+}
+
+# Adjust p-values for multiple testing using the Benjamini-Hochberg method
+anova_results$Adjusted_P_Value <- p.adjust(anova_results$P_Value, method = "BH")
+
+# Filter genes with significant differences
+significant_genes <- anova_results %>% 
+  filter(Adjusted_P_Value < 0.05) %>%
+  arrange(Adjusted_P_Value)
+
+# Saving the results
+write.csv(significant_genes, "significant_genes.csv", row.names = FALSE)
+
+# Display the results
+print(significant_genes)
+```
+
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(stats)
+
+# Assume data_with_clusters contains your original data with an added cluster column
+# Read the dataset with cluster assignments
+data_with_clusters <- read.csv("new_cluster.csv")
+
+# Function to perform ANOVA on a single gene
+perform_anova <- function(data, gene) {
+  formula <- as.formula(paste(gene, "~ Cluster"))
+  anova_result <- aov(formula, data = data)
+  summary(anova_result)[[1]]['Pr(>F)'][1]
+}
+
+# Apply ANOVA across all genes
+results <- sapply(colnames(data_with_clusters)[1:(ncol(data_with_clusters)-1)], function(gene) {
+  perform_anova(data_with_clusters, gene)
+})
+
+# Create a dataframe of p-values
+p_values <- data.frame(Gene = names(results), P_Value = as.numeric(results))
+
+# Adjust for multiple testing, e.g., using Benjamini-Hochberg method
+p_values$Adjusted_P_Value <- p.adjust(p_values$P_Value, method = "BH")
+
+# Filter for significant results, you can set a threshold, e.g., adjusted P < 0.05
+significant_genes <- p_values %>% filter(Adjusted_P_Value < 0.05)
+
+# Save the results
+write.csv(significant_genes, "significant_genes.csv", row.names = FALSE)
+
+# Print the significant genes
+print(significant_genes)
+```
+
+```{r}
+# Load the data from the RData file where the mean gene expressions per cluster are stored
+load("gene_means_per_cluster.RData")
+
+# Assuming gene_means_per_cluster is a dataframe with genes as rows, clusters as columns
+# Transpose the dataframe if needed to match the format: genes in columns, clusters in rows
+if (!("Cluster" %in% colnames(gene_means_per_cluster))) {
+  gene_means_per_cluster <- t(gene_means_per_cluster)
+  colnames(gene_means_per_cluster) <- c("Gene1", "Gene2", ..., "GeneN")  # Update with actual gene names
+  gene_means_per_cluster$Cluster <- factor(1:nrow(gene_means_per_cluster))
+}
+
+# Perform ANOVA for each gene to test differences across clusters
+anova_results <- list()
+for (gene in colnames(gene_means_per_cluster)[-which(colnames(gene_means_per_cluster) == "Cluster")]) {
+  model <- aov(reformulate("Cluster", response = gene), data = gene_means_per_cluster)
+  anova_results[[gene]] <- summary(model)[[1]]["Pr(>F)"]
+}
+
+# Extract p-values and adjust for multiple testing (e.g., using Bonferroni correction)
+p_values <- sapply(anova_results, function(x) x[1, "Pr(>F)"])
+p_adjusted <- p.adjust(p_values, method = "bonferroni")
+
+# Filter genes with significant differences (e.g., adjusted p-value < 0.05)
+significant_genes <- names(p_adjusted[p_adjusted < 0.05])
+
+# Report significant genes
+print(significant_genes)
+
+# Visualization of expression levels for significant genes (top 5 for example)
+for (gene in significant_genes[1:min(5, length(significant_genes))]) {
+  ggplot(gene_means_per_cluster, aes(x = Cluster, y = get(gene), fill = Cluster)) +
+    geom_boxplot() +
+    labs(title = paste("Expression of", gene, "across Clusters"), y = "Expression Level", x = "Cluster") +
+    theme_minimal()
+}
+
+```
+
+
+
+```{r}
+# Now to find out which genes are important in differentiating the clusters:
+# You could perform ANOVA (Analysis of Variance) across clusters for each gene to see if there are significant differences
+
+# Prepare results for ANOVA
+results <- list()
+for (gene in colnames(data)) {
+  model <- aov(as.formula(paste(gene, "~ Cluster")), data = data_with_clusters)
+  results[[gene]] <- summary(model)[[1]][["Pr(>F)"]]
+}
+
+# Filter significant genes with a threshold, e.g., p-value < 0.05
+significant_genes <- Filter(function(x) x < 0.05, results)
+
+# Print significant genes and their p-values
+print(significant_genes)
+
+# Optionally, you can visualize the expression of some significant genes across clusters using boxplots
+library(ggplot2)
+for (gene in names(significant_genes)[1:5]) {  # Visualize the top 5 significant genes
+  # ggplot(data_with_clusters, aes(x = Cluster, y = get(gene))) +
+  #   geom_boxplot() +
+  #   ggtitle(paste("Expression of", gene, "across Clusters"))
+  
+}
+
+```
+

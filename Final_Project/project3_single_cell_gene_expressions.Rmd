@@ -1,0 +1,214 @@
+---
+title: "Project 3: Single-Cell gene expressions"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+ScRNA-seq is a recent technological breakthrough in biology that measures gene expression levels of thousands of genes at the individual cell level. This technology has significantly advanced our understanding of cell functions.
+
+Cell heterogeneity, the phenomenon of varied gene expression levels in individual cells of the same type, is a complex issue. However, clustering analysis, a powerful tool, can help us navigate this complexity and identify subtypes in cases of cell heterogeneity.
+
+The file ss.csv contains gene expression levels of 558 genes (columns) from 716 cells (rows) of breast cancer tumors.
+
+In this analysis, we will start by applying Principal Component Analysis to our scRNA-seq data. The goal here is to determine the number of principal components needed to capture the variability of gene expressions. To achieve this, we will use the function 'prcomp' from the R package 'stats'.
+
+After identifying the major principal components, you need to fit a Gaussian-Mixture model to their principal component scores. Make sure to use the number of components you selected in Q1. Next, design and implement an EM algorithm to estimate the model and identify the cell clusters. Once you have identified the clusters, explore gene-expression signatures in each of them. Find out which genes are important to differentiate the clusters and report your findings.
+
+```{r, include = F}
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(stats) # for PCA
+library(factoextra) # for PCA visualization
+library(cluster) # For K-means
+library(mvtnorm) # calculate multivariate normal densities
+
+knitr::opts_chunk$set(
+  fig.width = 8,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+First, we import the data.
+
+```{r}
+ss_df = read_csv("ss.csv")
+```
+
+The data set contains `r nrow(ss_df)` observations and `r ncol(ss_df)` variables.
+
+# PCA
+
+We perform PCA and decide the number of components based on scree plot.
+
+```{r}
+res_pca = prcomp(ss_df, scale = T)
+fviz_eig(res_pca, ncp = 20)
+```
+
+Based on the elbow of the plot, we select 3, 7, 10 as our potential choices of component number. Based on the number chosen, we store the corresponding PCA scores into a new dataframe.
+
+```{r}
+comp_n = 3
+pca_df = res_pca$x[, 1 : comp_n]
+pca_df |> head() |> knitr::kable()
+```
+
+# GMM
+
+## K-means
+
+To detect the number of clusters, we first use K-means, the unsupervised learning method.
+
+```{r}
+wcss = numeric(10)
+
+set.seed(2024)
+for (i in 1:15) {
+  kmeans_fit = kmeans(pca_df, centers = i)
+  wcss[i] = kmeans_fit$tot.withinss
+}
+ggplot(data.frame(k = 1:15, WCSS = wcss), aes(x = k, y = WCSS)) +
+  geom_line() + geom_point() +
+  labs(x = "Number of Clusters", y = "Within-Cluster Sum of Squares")
+
+fviz_nbclust(pca_df, FUNcluster = kmeans, method = "silhouette")
+```
+
+Based on the elbow of the plot, we select 4, 8 as our potential choices of cluster number.
+
+## EM Algorithm
+
+Suppose we have $k$ clusters. Let $X_i$ denote each individual cell, then we have $X\sim N(\mu_j,\Sigma_j)$ with probability $p_j,\,j=1,2,\cdots,k.$
+
+The density of $X$ is thus
+$$f(x)=\sum_{j=1}^kp_jf(x,\mu_j,\Sigma_j)$$
+
+Observed likelihood of $(x_1,...,x_n)$
+$$L_{obs}f(x)=\prod_{i=1}^n(\sum_{j=1}^kp_jf(x,\mu_j,\Sigma_j))$$
+
+Suppose there exists another sequence of i.i.d $Z_i\sim Categorical(k,p_1,\cdots,p_k)$ where $p_j\geq 0$ and $\sum^k_{j=1} p_j=1$. For each $i$, if $Z_{i}=j$, $X_i$ is from $N(\mu_j,\Sigma_j^2)$. The joint likelihood of $(X_i,\,Z_i)$ is ${\prod^k_{j=1}p_jf(x_i,\mu_j,\Sigma_j)}^{I(z_i=j)}.$
+
+Let $p$ denote $(p_1,\cdots,p_k)$, $\mu$ denote $(\mu_1,\cdots,\mu_k)$, and $\Sigma$ denote $(\Sigma_1,\cdots,\Sigma_k)$. We can use the EM algorithm to estimate $\theta=(p,\mu,\Sigma)$.
+
+The complete log-likelihood of $(X_i, Z_i)'s$ is a linear function of $Z_i$'s
+$$\ell(\mathbf{X},\mathbf{Z},\theta)=\sum_{i=1}^n\sum_{j=1}^k(I(Z_i=j)\log p_j+I(Z_i=j)\log f(x_i,\mu_j,\Sigma_j)).$$
+
+Let $t$ denote the $t_{th}$ iteration, then:
+
+**E-step** $E_Z(\ell(\mathbf{X},\mathbf{Z},\theta) \mid  \mathbf{X}, \theta^{(t)})$. Replacing $Z_i$ by $\delta_i^{(t)}$
+
+$$\delta_i^{(t)}\widehat{=}E[Z_i\mid x_i,\theta^{(t)}]=\sum_{j=1}^kjP(Z_i=j\mid x_i,  \theta^{(t)})=\sum_{j=1}^k\frac{jp_j^{(t)}f(x_i,\mu_j^{(t)},\Sigma_j^{(t)})}{\sum_{l=1}^kp_l^{(t)}f(x_i,\mu_l^{(t)},\Sigma_l^{(t)})}$$
+
+**M-step** $\theta^{(t+1)} = \arg\max\ell( \mathbf{X}, \mathbf{\delta}^{(t)}, \theta )$. 
+
+$$p^{(t+1)}_j=\frac{1}{n} \sum_{i=1}^{n} I\{\delta^{(t)}_i=j\}$$
+$${\mu}^{(t+1)}_j=\frac{\sum_{i=1}^nI\{\delta^{(t)}_i=j\} x_i}{\sum_{i=1}^n I\{\delta^{(t)}_i=j\}}$$
+$${\Sigma}^{(t+1)}_j =  \frac{\sum_{i=1}^n I\{\delta^{(t)}_i = j\}(x_i-{\mu}^{(t+1)}_j){(x_i-{\mu}^{(t+1)}_j)}^T}{\sum_{i=1}^n I\{\delta^{(t)}_i = j\}}$$
+
+We then implement it in R. We set the initial mean and covariance to be the mean and covariance calculated from the data.
+
+```{r}
+expectation_func = function(dat, k, comp_n, p, mu, sigma)
+{
+  n = nrow(dat)
+  density_mat = matrix(nrow = n, ncol = k)
+  for(j in 1 : k)
+    density_mat[, j] = p[j] * dmvnorm(pca_df, mean = mu[j, ],
+                                      sigma = cov_mat[, , j])
+  w = density_mat / rowSums(density_mat)
+  return(w)
+}
+
+maximization_func = function(dat, k, comp_n, w, mu)
+{
+  n = nrow(dat)  # Number of data points
+  
+  # Update mixing coefficients
+  p = numeric(k)
+  mu0 = mu
+  mu = matrix(0, nrow = k, ncol = comp_n)
+  cov_mat = array(0, dim = c(comp_n, comp_n, k))
+  log_likelihood_new = 0
+  for(j in 1:k)
+  {
+    p[j] = mean(w[, j])
+    mu[j, ] = t(w[, j]) %*% dat / sum(w[, j])
+    for(i in 1 : n)
+    {
+      cov_mat[, , j] = cov_mat[, , j] + w[i, j] * (dat[i, ] - mu0[j, ])  %*%
+        t(dat[i, ] - mu0[j, ]) / sum(w[, j])
+    }
+    
+  }
+  return(list("p" = p, "mu" = mu, "cov_mat" = cov_mat))
+}
+
+em_iter = function(dat, k, comp_n, p, mu, sigma, 
+                   max_iter = 100, tol = 1e-3, log_likelihood = -Inf)
+{
+  i = 0
+  res = tibble()
+  while(i < max_iter)
+  {
+    i = i + 1
+    w = expectation_func(dat, k, comp_n, p, mu, cov_mat)
+    
+    # Compute log-likelihood
+    log_likelihood_new = 0
+    for(j in 1 : k)
+      log_likelihood_new = log_likelihood_new + 
+      sum(w[, j] * (log(p[j]) + log(dmvnorm(dat, mean = mu[j, ], 
+                                            sigma = cov_mat[,, j]) + 0.0001)))
+
+    maximization = maximization_func(dat, k, comp_n, w, mu)
+    # print(maximization)
+    # print(log_likelihood)
+    # Check for convergence
+    cluster = tibble()
+    if(abs(log_likelihood_new - log_likelihood) < tol)
+    {
+     cluster = which(w == apply(w, 1, max), arr.ind = T)
+     cluster = cluster[order(cluster[, 1]),] |> as_tibble() |>
+       group_by(row) |> summarise(cluster = min(col))
+     break
+    }
+    log_likelihood = log_likelihood_new
+    p = maximization$p
+    mu = maximization$mu
+    cov_mat = maximization$cov_mat
+    res = rbind(res, tibble(i, log_likelihood))
+  }
+  return(list(res = res, cluster = cluster))
+}
+```
+
+```{r}
+set.seed(2024)
+k = 3
+# Initialize parameters
+p = rep(1 / k, k)  # Mixing coefficients
+mu = matrix(rep(colMeans(pca_df), k), nrow = k) +
+  matrix(rnorm(comp_n * k), nrow = k)  # Means
+cov_mat = array(cov(pca_df), dim = c(comp_n, comp_n, k))# Covariance matrices
+
+gmm_fit = em_iter(pca_df, k, comp_n, p, mu, sigma, max_iter = 200)
+plot(gmm_fit[[1]])
+table(gmm_fit$cluster[,2]) |> knitr::kable()
+
+# Save the results
+write.csv(as.matrix(gmm_fit$cluster[,2]), "significant_genes_cluster.csv", row.names = FALSE)
+```
+
+
