@@ -1,0 +1,228 @@
+---
+title: '4'
+author: "Z. D Kuang"
+date: "`r Sys.Date()`"
+output: html_document
+---
+## Tasks:
+
+\begin{enumerate}
+
+The dataset "breast-cancer.csv" consists of 569 rows and 33 columns. The first column, labeled "ID", contains individual breast tissue images. The second column, labeled "Diagnosis", identifies whether the image is from a cancerous or benign tissue (M=malignant, B=benign). There are 357 benign and 212 malignant cases. The other 30 columns represent the mean, standard deviation, and largest values of the distributions of 10 features computed for the cell nuclei.
+
+ Build a logistic-LASSO model to classify images as malignant or benign. Use Lasso to automatically select features and implement a path-wise coordinate-wise optimization algorithm to obtain a path of solutions with a sequence of descending $\lambda$ values.
+
+ Write a report to summarize your findings.
+\end{enumerate}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(caret)
+library(glmnet)
+library(matlib)
+library(glmnet)
+library(ROCR)
+source("loglike_grad_hess_func.R")
+```
+
+
+
+
+
+# Newton Method
+
+input:
+x: predictors without intercept
+y: response variables
+beta: if not specified, 0 will be set to all coefficients
+tol: the threshold to end up the function if the difference between loglike function at 2 adjacent steps below this value.
+lambda_init: the initial lambda to control the number of each step and lambda will change in halving process.
+decay_rate: the ratio of decayed lambda to lambda at last step in havling process.
+
+output:
+beta: a vector of coeffients
+
+```{r}
+newton_optimize = function(x, y, beta = NULL, tol = 0.001, lambda_init = 1, decay_rate = 0.5){
+  
+  # add the intercept
+  x = cbind(rep(1, nrow(x)), x)
+  
+  # if beta is not specified, set all initial coefficients to 0
+  if (is.null(beta))
+    beta = matrix(rep(0, ncol(x)))
+  
+  # calculate the initial gradient, Hessian matrix and negative loglike funtion
+  optimization = func(x, y, beta)
+  step = 1
+  previous_loglik = -optimization$loglik
+
+  # start the interations to optimize the beta
+  while (TRUE) {
+    print(paste("step:", step, "  negative loglike loss:", -optimization$loglik))
+   
+    # set initial lambda at this step equals to the parameters, this variable will change in havling step
+    lambda = lambda_init
+    
+    # since there maybe some issues when calculate new beta, so we use try-catch sentence. If some errors ocurr, the beta will be kept as the beta at last step.
+    beta_new <- tryCatch({
+        beta - lambda * inv(optimization$Hess) %*% optimization$grad # calculate new beta, if no errors, the result will be given to variable "beta_new" 
+      }, error = function(err) {return(beta)})
+
+    
+    # calculate gradient, Hessian and loglike   
+    optimization = func(x, y, beta_new)
+   
+    
+    # havling steps start only when it optimizes at opposite direction.
+    # if it optimizes at opposite direction, lambda will be havled to make the step smaller. 
+    while (previous_loglik <= -optimization$loglik) {
+      lambda = lambda * decay_rate # lambda decay
+      
+      # same reason to use try-catch
+      # but if errors occur, although beta keeps, the lambda will be havled at next step, makes the result different.
+      beta_new <- tryCatch({
+        beta - lambda * inv(optimization$Hess) %*% optimization$grad
+      }, error = function(err) {return(beta)})
+      
+      # optimize by decayed lambda
+      optimization = func(x, y, beta_new)
+      
+      # if the optimized differences are too small, end up the function and return beta. 
+      if ((previous_loglik - -optimization$loglik) <= tol)
+        return(beta)
+    }
+    
+    # if the differences calculated from normal calculation or havling steps are too small, end up the function and return beta. 
+    if (abs(previous_loglik - -optimization$loglik) <= tol)
+      return(beta)
+    
+    # save the negative loglike value at this step and will be used as previous loglike value at next step.
+    previous_loglik = -optimization$loglik
+    
+    # if the function is not ended up, then the new beta is valid. save it.
+    beta = beta_new 
+    
+    step = step + 1
+  }
+  
+  # so the loop will be ended up by 2 conditions.
+  # 1. the differences calculated by havling steps are too small.
+  # 2. the differences calculated by normal optimization are too small.
+  return(beta)
+}
+
+
+```
+
+# Prediction
+
+```{r}
+predict = function(beta, x){
+  x = cbind(rep(1, nrow(x)), x)
+  predict_y = 1 / (1 + exp(-x %*% beta))
+  # Threshold is 0.5
+  predict_y[predict_y < 0.5] = 0 
+  predict_y[predict_y >= 0.5] = 1
+  return(predict_y)
+}
+  
+
+```
+
+# Loading the data and run function
+
+We will add the intercept in function "newton_optimize" to keep the original data.
+
+```{r}
+# read data
+cancer = read.csv("./breast-cancer.csv")
+
+# make the predictors, and the intercept will be added in function "newton_optimize" instead of here.
+x = cancer %>% select(-id, -diagnosis) %>% as.matrix()
+
+# make the response variables
+y <-matrix(rep(0,nrow(cancer)))
+y[cancer$diagnosis=="M"] = 1
+
+# calculate beta_hat by newton method 
+beta = newton_optimize(x, y, tol = 0.01)
+
+# predict
+predict(beta, x)
+
+# check the data in glm
+model = glm(y ~ x, family = "binomial")
+model$coefficients
+```
+
+# Training and Tests with CV
+
+```{r}
+cv2 = function(data, k = 10) {
+  # Create folds for N-fold cv
+  flds = createFolds(data$diagnosis, k = k, list = T)
+  
+  # Initialize fit statistics
+  rmse = rep(NA, k - 1)
+  accuracy = rep(NA, k - 1)
+  auc = rep(NA, k - 1)
+  
+  # Loop through each fold
+  for (fold in 1:(length(flds) - 1)) {
+    # Split training and test
+    test = data[flds[[fold]],]
+    train = data[-flds[[fold]],]
+    
+    # Prepare data for logistic regression
+    x_train = train %>% select(-id, -diagnosis) %>% as.matrix()
+    y_train = train %>% 
+      select(diagnosis) %>% 
+      mutate(diagnosis = as.integer(as.factor(diagnosis)) - 1) %>% 
+      as.matrix()
+    x_test = test %>% select(-id, -diagnosis) %>% as.matrix()
+    y_test = test %>% 
+      select(diagnosis) %>% 
+      mutate(diagnosis = as.integer(as.factor(diagnosis)) - 1) %>% 
+      as.matrix()
+    
+    # Train model
+    train_model = newton_optimize(x_train, y_train, tol = 0.01)
+    predict_result = predict(train_model, x_test)
+    
+    # Calculate RMSE 
+    error = c(predict_result[,1]) - y_test
+    rmse[fold] = sqrt(mean(error^2))
+    
+    # Calculate Accuracy 
+    tp = sum(ifelse(c(predict_result[,1]) == 1 & y_test == 1, 1, 0))
+    tn = sum(ifelse(c(predict_result[,1]) == 0 & y_test == 0, 1, 0))
+    fp = sum(ifelse(c(predict_result[,1]) == 1 & y_test == 0, 1, 0))
+    fn = sum(ifelse(c(predict_result[,1]) == 0 & y_test == 1, 1, 0))
+    accuracy[fold] = (tp + tn) / length(y_test)
+    
+    # Calculate AUC
+    pred = prediction(c(predict_result[,1]), y_test)
+    auc_perf = performance(pred, measure = "auc")
+    auc[fold] = auc_perf@y.values[[1]]
+  }
+  return(list("RMSE" = rmse, "Accuracy" = accuracy, "AUC" = auc))
+}
+
+set.seed(12345)
+fit_stats = cv2(cancer, k = 10)
+# RMSE = 0.2428
+rmse = mean(fit_stats$RMSE)
+rmse
+
+# acc = 93.78%
+acc = mean(fit_stats$Accuracy)
+acc
+
+# AUC = 93.13%
+auc = mean(fit_stats$AUC)
+auc
+```
+
+

@@ -1,0 +1,627 @@
+---
+title: "Homework on re-sampling methods"
+date: "P8160 Advanced Statistical Computing "
+author: "Zhuodiao Kuang(zk2275)"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+
+require(survival)
+require(quantreg)
+require(glmnet)
+require(MASS)
+require(pROC)
+
+set.seed(2024)
+```
+**In this homework, we require the use of parallel computing codes for your implementations.** 
+```{r other packages}
+library(parallel)
+library(foreach)
+library(doParallel)
+library(ggplot2)
+library(tidyverse)
+```
+
+## Problem 1: a randomized trial on an eye treatment
+
+An ophthalmologist has designed a randomized clinical trial to assess the effectiveness of a new laser treatment (blue) against the traditional one (red). The response to be evaluated is visual acuity, which is measured by counting the number of letters correctly identified in a standard eye test. Out of the 40 patients who are eligible for laser treatment, 20 have only one suitable eye for the treatment and received one treatment allocated at random. The remaining 20 patients have both eyes suitable for laser treatment and received both treatments randomly assigned to the two eyes. Therefore, the study includes both paired comparison and two-sample data. The data are presented in the following R script, where the first 20 rows represent patients who received treatments in both eyes., and the last 10 rows represent patients who received treatment in only one eye.
+
+\begin{verbatim}
+> blue <- c(4,69,87,35,39,79,31,79,65,95,68,
+           62,70,80,84,79,66,75,59,77,36,86,
+           39,85,74,72,69,85,85,72)
+> red <-c(62,80,82,83,0,81,28,69,48,90,63,
+        77,0,55,83,85,54,72,58,68,88,83,78,
+        30,58,45,78,64,87,65)
+> acui<-data.frame(str=c(rep(0,20),
+            rep(1,10)),red,blue)
+\end{verbatim}
+
+
+\vskip 20pt
+
+\textbf{Answer the following question:}
+ 
+\begin{enumerate}
+\item[(1)]  The treatment effect of the new laser treatment is defined as $$\Delta= E(Y\mid \mbox{trt = new/blue}) - E(Y\mid \mbox{trt = traditional/red}).$$  Please construct a statistics from  the collected data to estimate the treatment effect $\Delta$.
+\item[(2)] Propose a bootstrap algorithm to construct a 95\% confidence interval for the treatment effect. Describe your bootstrap procedure. Based on the resulting confidence interval, can the new treatment effectively improve visual acuity?
+\end{enumerate}
+
+### Answer 1.1
+
+```{r 1_1_data}
+blue <- c(4,69,87,35,39,79,31,79,65,95,68,
+           62,70,80,84,79,66,75,59,77,36,86,
+           39,85,74,72,69,85,85,72)
+red <- c(62,80,82,83,0,81,28,69,48,90,63,
+        77,0,55,83,85,54,72,58,68,88,83,78,
+        30,58,45,78,64,87,65)
+acui <- data.frame(str = c(rep(0,20),rep(1,10)),red,blue)
+```
+
+The treatment effect is defined as $E(Y\mid \mbox{trt = new}) - E(Y\mid \mbox{trt = traditional})$. So we calculate the raw treatment effect based on the data. Let blue laser be the new treatment.
+
+```{r raw_effect}
+raw_trt_eff <- mean(blue) - mean(red)
+```
+
+The raw treatment effect (the observed value of mean difference) is `r round(raw_trt_eff, 3)`.
+
+### Answer 1.2
+
+Since there are paired structures in our data, when doing bootstrap, we're going to preserve this structure, so instead of bootstrap each observation, we bootstrap subjects for paired data. For un-paired data, we use the simple bootstrap. That is
+
+- For 20 pairs of paired data, in each bootstrap replicate, random sample (with replacement) the number of subject
+
+- For 10 unpaired data in each group, sample with replacement in each bootstrap sample
+
+- Combine the two part of bootstrap replicates as the final bootstrap replicate
+
+- Repeat B times
+
+And the implementation of this paired bootstrap is shown in the `PairedStrap()` function.
+
+```{r paired_bootstrap}
+set.seed(2024)
+# return whole bootstrap sample for future use
+PairedStrap <- function(paired, unpaired, nboot = 2000){
+    numCores <- detectCores()
+    registerDoParallel(numCores)
+    
+    # parallel computing implementation using foreach
+        res <- foreach(icount(nboot), .combine=rbind) %dopar% {
+           # bootstrap for paired data
+           subject <- nrow(paired)
+           pairedstrap.ind <- sample(subject, subject, replace = T)
+           pairedsamp <- paired[pairedstrap.ind,]
+           pairedstrap.trt <- pairedsamp$blue
+           pairedstrap.ctrl <- pairedsamp$red
+           # bootstrap for unpaired data 
+           unpaired.trt <- unpaired$blue
+           unpaired.ctrl <- unpaired$red
+           unpairedstrap.trt <- sample(unpaired.trt, replace = T)
+           unpairedstrap.ctrl <- sample(unpaired.ctrl, replace = T)
+           # combine two parts of bootstrap
+           boot.trt <- c(pairedstrap.trt, unpairedstrap.trt)
+           boot.ctrl <- c(pairedstrap.ctrl, unpairedstrap.ctrl)
+           # b-th bootstrap estimate of treatment effect
+           mean(boot.trt) - mean(boot.ctrl)
+        }
+        stopImplicitCluster()
+        
+        return(res)
+}
+
+
+acui.paired <- acui[which(acui$str == 0),]
+acui.unpaired <- acui[which(acui$str == 1),]
+treatmenteffect.boot.res <- PairedStrap(acui.paired, acui.unpaired, 1e4)
+treatmenteffect.boot.se <- sqrt(var(treatmenteffect.boot.res))
+
+
+hist(treatmenteffect.boot.res)
+```
+
+From 10000 bootstrap sample, we have a estimation of the treatment effect is `r round(mean(treatmenteffect.boot.res), 3)` with a standard error `r round(treatmenteffect.boot.se, 3)`. And from the histogram of the distribution of bootstrap estimates, we can see that it is approximately normal.
+
+The $100(1-\alpha)\%$ confidence limits for the basic bootstrap confidence interval are (Statistical Computing with R, Page 226)
+
+$$(2\hat\theta-\hat\theta^*_{1-\alpha/2}, 2\hat\theta-\hat\theta^*_{\alpha/2})$$
+
+```{r boot_ci}
+set.seed(2024)
+alpha = 0.05
+boot_ci <- function(boot_est, alpha, raw_est){
+    # use quantile function to get the upper and lower bound
+    qt <- quantile(boot_est, c(alpha/2, 1-alpha/2), type = 1)
+    names(qt) <- rev(names(qt))
+    CI <- rev(2 * raw_est - qt)
+    return(CI)
+}
+
+boot_ci <- boot_ci(treatmenteffect.boot.res, 0.05, raw_trt_eff)
+t(boot_ci) |>  knitr::kable(digits = 3,
+caption = "95% confidence interval of bootstrap estimate of treatment effect")
+```
+
+The 95% confidence interval of the treatment effect $\hat\theta$ is shown in the table 1. Since the confidence interval contains 0, so we conclude that at 95% confident level, we cannot say that there is significant difference in treatment effect between the new treatment and the traditional one.
+
+
+
+
+## Problem 2 
+The Galaxy data comprises the velocities (in km/sec) of 82 galaxies from six well-separated conic sections of an unfilled survey of the Corona Borealis region. The structure in the velocity distribution corresponds to the spatial distribution of galaxies in the far universe. A multimodal distribution of velocities, in particular, indicates a strong heterogeneity in the spatial distribution of the galaxies. This is seen as evidence for the existence of voids and superclusters in the far universe.
+
+Statistically, the question of multimodality can be formulated as a test problem
+
+$$H_0: n_{\mbox{mode}} = 1 \quad \mbox{vs} \quad H_a: n_{\mbox{mode}} \ge 1$$
+where $n_{\mbox{mode}} $ is the number of modes of the density of the velocities.
+
+
+
+Considered nonparametric kernel density estimates
+$$ \widehat{f}_{K,h}(x) = \frac{1}{nh}\sum_{i=1}^n K(\frac{x - X_i}{h}) $$
+It can be shown that the number of modes in $\widehat{f}_{K,h}(x)$ decreases as $h$ increase.
+Let $H_1$ be the minimal bandwidth for which 
+$\widehat{f}_{K,H_1}(x)$ is unimodal. In the galaxy data, $h_1 = 3.05$
+
+Since multimodal densities need more smoothing to become unimodal, the minimal bandwidth $H_1$
+can be used as a test statistic, and one reject the null hypothesis if 
+$$\mbox{Prob} (H_1 > h_1) \le \alpha $$
+
+To evaluating the distribution of $H_1$ under the null, one could use the following bootstrap algorithm
+
+
+\begin{enumerate}
+\item draw B bootstrap samples if size $n$ from  $\widehat{f}_{K,h_1}(x)$
+\item for each bootstrap, find $h_1^{*(b)}$, the smallest $h$ for which this bootstrap sample has just $1$ mode
+\item approximate p-value of test is $\frac{\#{h_1^{*(b)}>h_1}}{B}$
+\end{enumerate}
+
+
+Implement the algorithm above in R,  apply it to the galaxy data, and report your findings. You may find the following R codes helpful.
+
+\begin{verbatim}
+library(MASS)
+data(galaxies)
+plot(density(galaxies/1000, bw=1.5))
+plot(density(galaxies/1000, bw=3.5))
+
+#calculate the number of modes in the density
+  den <- density(galaxies/1000, bw=1.5)
+  den.s <- smooth.spline(den$x, den$y, all.knots=TRUE, spar=0.8)
+  s.1 <- predict(den.s, den.s$x, deriv=1)
+  nmodes <- length(rle(den.sign <- sign(s.1$y))$values)/2
+\end{verbatim}
+
+### Answer 2
+
+Since in each bootstrap, we want to find $h_1^{*(b)}$, the smallest $h$ for which this bootstrap sample has just $1$ mode. Under our null hypothesis, $h_1 = 3.05$. So we apply the `n.modes()` to each bootstrap sample by setting a sequence of bandwidths. Here, we only focus on bandwidths close to $h_1$ . Since if the null hypothesis is true, the bootstrap estimates $h_1^{*(b)}$ should be centered around the $h_1$.
+
+
+```{r bootstrap2}
+boot.galaxy <- function(data, nboot){
+n.modes <- function(data = galaxies, bw){
+      den <- density(data/1000, bw = bw)
+      den.s <- smooth.spline(den$x, den$y, all.knots = TRUE)
+      s.1 <- predict(den.s, den.s$x, deriv = 1)
+      nmodes <- length(rle(den.sign <- sign(s.1$y))$values)/2
+ return(nmodes)
+}
+
+get.h1 = function(data, upper = 10, tol = 1e-5){
+        l = 1e-9
+        r = upper
+        while (r - l > tol) {
+            bw = (l + r) / 2
+            n = n.modes(data, bw)
+            if (n == 1) {
+                r = bw
+            } else {
+                l = bw
+            }
+        }
+    return(ceiling(100 * l) / 100)
+}
+    galaxy.dens <- density(data/1000, bw = 3.05)
+    
+    # parallel computing
+    h1.res <- foreach(icount(nboot), .combine = cbind) %dopar% {
+        boot <- 1000 * sample(galaxy.dens$x, 
+                              size = 82, 
+                              replace = T, 
+                              prob = galaxy.dens$y)
+        get.h1(boot)
+    }
+    return(h1.res)
+}
+
+```
+
+
+```{r problem_2_boot}
+
+cl <- makeCluster(12 , outfile = "")
+registerDoParallel(cl)
+res.galaxies <- boot.galaxy(galaxies,1000)
+stopCluster(cl)
+# calculate the p value of the 
+p_val_galaxy <- sum(res.galaxies > 3.05)/1000
+galaxy_res_df <- data.frame(h1 = t(res.galaxies))
+
+
+ggplot(galaxy_res_df, aes(x = h1)) +
+    geom_histogram(aes(y = ..density..), binwidth = 0.05, alpha = 0.5, fill = 8) +
+    geom_density(size = 0.5, col = 2) +
+    geom_vline(xintercept = 3.05, lty = 2, color = 'blue') + 
+    annotate("text", x = 3.3, y = 0.35, label = "h1 = 3.05 ", color = "blue") 
+```
+
+Our test has given a p-value of `r round(p_val_galaxy, 4)` > 0.05, we fail to reject the null
+hypothesis that the number of modes is 1 concluding that the distribution of velocities is unimodal.
+
+
+
+
+## Problem 3 (Continue with the breast cancer sutdy): 
+
+
+Recall that in the last homework, you have analyzed the \textit{breast-cancer2.csv} using logistic-LASSO to classify cancer images. There is one turning parameter $\lambda$ in logistic LASSO that controls the shrinkage effect. 
+
+\begin{enumerate}
+\item Please implement a 5-fold cross-validation algorithm to select the optimal tuning parameter in your logistic LASSO regression.
+
+\item Please use the "optimal" logistic LASSO (obtained from 5-fold cross-validation) to predict the probability of malignancy for each of the images. Keep in mind that the direct estimates from logistic-Lasso may be biased, so it's important to re-fit the logistic regression with the selected predictors to get a more accurate probability estimate. Also, how well the selected predictors classify the images? You can measure  the prediction accuracy using the AUC metric.
+
+\item Implementing the Bootstraping Smoothing algorithm to re-evaluate the probabilities of malignancy. How well do the new predictors classify the images, and how does it compare to the "optimal" one in 2 ?
+
+\item Writ a summary of your findings.
+\end{enumerate}
+
+
+
+### Answer 3.1
+
+```{r read_data}
+set.seed(2024)
+breast_dat <- read_csv("breast-cancer-2.csv") |>
+  select(-id) |>
+  mutate(diagnosis = as.factor(diagnosis)) |> 
+  na.omit()
+
+breast_y = breast_dat$diagnosis
+breast_x = as.matrix(breast_dat |> select(-diagnosis))
+
+
+#Spliting the dataset to train and test, with proportion 80% and 20%
+rowTrain = sample(1:nrow(breast_x), ceiling(nrow(breast_x) * 0.8))
+y_train = breast_y[rowTrain]
+X_train = breast_x[rowTrain,]
+
+y_test = breast_y[-rowTrain]
+X_test = breast_x[-rowTrain,]
+```
+
+```{r testglm, include=FALSE, results='hide'}
+set.seed(2024)
+goldmodel <- cv.glmnet(X_train, y_train, family = "binomial", alpha = 1, lambda = exp(seq(-8, -1, length = 201)))
+goldmodel$lambda.min
+examplefit = glmnet(X_train, y_train, family = "binomial", alpha = 1, lambda = 0.1)
+examplefit$beta
+example.pred = predict(examplefit, X_test, type = "response")
+example.pred.class = predict(examplefit, X_test, type = "class")
+ytest.bool = ifelse(y_test == "B", FALSE, TRUE)
+```
+
+
+```{r 5_fold_cv}
+OptimalLasso <- function(lambdaseq, X_train, y_train, K =5){
+  
+    AUC <- function(score, bool) {
+      n1 <- sum(!bool)
+      n2 <- sum(bool)
+      U  <- sum(rank(score)[!bool]) - n1 * (n1 + 1) / 2
+      return(1 - U / n1 / n2)
+    }
+    
+    # for each lambda in lambda seq, do 5-fold cross-validation to get the cv accuracy
+    lassocv <- function(cur, x, y, K) {
+        folds <- sample(rep(1:K, length.out = nrow(x)))
+            auclist <- c()
+            for (i in 1:K){
+            testidx <- which(folds == i)
+            xtest <- x[testidx,]
+            ytest <- y[testidx]
+            xtrain <- x[-testidx,]
+            ytrain <- y[-testidx]
+            # model fit with given lambda
+            modeltmp <- glmnet(xtrain, ytrain, standardize = TRUE, family = "binomial", alpha = 1, lambda = cur)
+            # predict on the validation set
+            ypred <- predict(modeltmp, xtest, type = "response")
+            # calculate AUC
+            auc <- AUC(ypred, ifelse(ytest == "B", FALSE, TRUE))
+            # add cv result to list
+            auclist <- c(auclist, auc)
+        }
+        # just return the mean accuracy
+        return(mean(auclist))
+    }
+    
+    # get the auc and lambdas
+    cv.res <- sapply(lambdaseq, FUN = function(x) lassocv(x, X_train, y_train, 5))
+    cv.res.df <- data.frame(lambdas = lambdaseq, auc = cv.res)
+    # return best lambda on cv result
+    # but so much NAN AND 1 there for the real-world data
+    best.lambda <- cv.res.df[which(cv.res.df$auc == max(cv.res.df$auc)),]$lambdas
+    
+    # refit lasso based on best lambda
+    best.model <- glmnet(X_train, y_train, standardize = TRUE,
+                         family = "binomial", alpha = 1, lambda = best.lambda)
+    coef(best.model)
+    
+    best.model.coef <- as.matrix(coef(best.model))
+    imp.predictors <- names(best.model.coef[best.model.coef != 0,])
+    imp.predictors = imp.predictors[2:length(imp.predictors)]
+    
+    optimal.res <- list(lambda = best.lambda,
+                        cvResult = cv.res.df,
+                        bestModel = best.model,
+                        impPredictor = imp.predictors)
+    return(optimal.res)
+}
+
+```
+
+
+```{r implement_5_fold_cv}
+set.seed(2024)
+cl2 <- makeCluster(15 , outfile = "")
+registerDoParallel(cl2)
+clusterExport(cl=cl2, c('OptimalLasso','X_train','y_train'))
+optimal.fit <- OptimalLasso(exp(seq(-8, -1, length = 201)), X_train, y_train)
+stopCluster(cl2)
+```
+
+The 5-fold cross-validation gives us a best lambda `r optimal.fit$lambda`, and the selected important variables under this lambda are `r paste(optimal.fit$impPredictor, collapse = ", ")`.
+
+
+### Answer 3.2
+
+```{r selected_var_glm}
+AUC <- function(score, bool) {
+    n1 <- sum(!bool)
+    n2 <- sum(bool)
+    U  <- sum(rank(score)[!bool]) - n1 * (n1 + 1) / 2
+    return(1 - U / n1 / n2)
+}
+
+logit.fit <- glmnet(X_train[,optimal.fit$impPredictor], y_train, family = binomial(link = "logit"), lambda = 0)
+logit.train.prob <- predict(logit.fit, X_train[,optimal.fit$impPredictor], type = "response")
+logit.test.prob <- predict(logit.fit, X_test[,optimal.fit$impPredictor], type = "response")
+logit.train.auc <- AUC(logit.train.prob, ifelse(y_train == "B", FALSE, TRUE))
+logit.test.auc <- AUC(logit.test.prob, ifelse(y_test == "B", FALSE, TRUE))
+```
+
+By refitting the logistic model using the important variables on the training dataset, we get a AUC = `r round(logit.train.auc, 5)` on training set and a AUC = `r round(logit.test.auc, 5)` on test set. Which means the selected predictors classify the images pretty well.
+
+
+
+### Answer 3.3
+
+Efron's 2014 paper in the Journal of the American Statistical Association (JASA) touches on a crucial point in statistical theory, particularly regarding the role of model selection in estimation accuracy. The paper outlines a methodology that incorporates model selection into the estimation of standard errors and confidence intervals through bootstrap methods. This approach is noteworthy for its attempt to address the challenges posed by the discontinuous nature of selection-based estimators, utilizing bagging (bootstrap smoothing) as a key tool.
+
+### Point Estimation Process
+
+The process for point estimation as outlined involves:
+1. **Bootstrap Replications**: Conducting a series of bootstrap replications, denoted as $B$ times. In each replication, a best model is selected based on the bootstrap sample $y_i^*$.
+2. **Coefficient Estimates**: For each bootstrap sample, an estimate for the coefficient is obtained, denoted as $t(y_i^*)$ for $i=1,2,\dots,B$.
+3. **Averaging Over Bootstrap Replications**: The final smoothed estimate $\tilde{\mu}$ is calculated by averaging these estimates over all $B$ bootstrap replications, resulting in $\tilde{\mu} = s(y) = \frac{1}{B}\sum_{i=1}^B t(y_i^*)$.
+
+### Inference
+
+For the inference part, the approach is detailed as follows:
+1. **Representation of Bootstrap Replicates**: $Y_{ij}^*$ is defined to represent the frequency of the $j^{th}$ data point's appearance in the $i^{th}$ bootstrap replicate. This formulation allows $Y_i^*$ to be modeled as following a multinomial distribution with parameters that reflect the bootstrap process.
+2. **Estimation of Standard Deviation**: The nonparametric delta-method is introduced for estimating the standard deviation of $s(y)$ in scenarios that deviate from the ideal bootstrap. The standard deviation, $\tilde{sd}_B$, is computed as $\tilde{sd}_B = [\sum_{j=1}^n\hat{cov}_j^2]^{1/2}$, where $\hat{cov}_j$ represents the covariance estimates calculated as $\hat{cov}_j = \sum_{i=1}^B(Y_{ij}^*-Y_{.j}^*)(t_i^*-t_.^*)/B$.
+
+### Summary
+
+This methodology represents a significant effort to integrate model selection into the assessment of estimation accuracy, acknowledging the complexities and discontinuities that can arise from model selection processes. By employing bootstrap smoothing, the approach seeks to provide more stable and accurate estimations and confidence intervals, accounting for the variability introduced by the model selection. This work underscores the evolving understanding of bootstrap methods and their potential to enhance statistical inference, especially in contexts where model selection plays a critical role.
+
+
+```{r para_boot_smooth}
+BootSmoothing <- function(X_train, y_train, nboot, K){
+    # Delta-method
+    coefInference <- function(x, Ys, coefMtx, predictors, nboot){
+        var.smooth <- 0
+        tdot <- mean(coefMtx[, predictors])
+        for(j in 1:nrow(x)){
+            cov.j <- 0
+            yj <- mean(Ys[,j])
+            for (i in nboot) {
+                cov.j <- cov.j + (Ys[i,j] - yj) * (coefMtx[i, predictors] - tdot)
+            }
+            var.smooth <- var.smooth + (cov.j/nboot)^2
+        }
+        sd.smooth <- sqrt(var.smooth)
+        return(sd.smooth)
+    }
+
+    # Bootstrap smooth main method
+    # Parallel Computing
+    res.bs <- foreach(icount(nboot), .combine = rbind, .packages = c('glmnet')) %dopar% {
+        coefList = rep(0, 10 + 1)
+        names(coefList) = c("(Intercept)", colnames(X_train))
+        # bootstrap
+        rowBoot = sample(1:nrow(X_train), replace = TRUE)
+        # Yij, the # of jth data appears
+        Yij <- rep(0, length(y_train))
+        for(j in 1:length(y_train)){
+            Yij[j] = sum(j == rowBoot)
+        }
+        
+        xboot <- X_train[rowBoot,]
+        yboot <- y_train[rowBoot]
+        # do the cv-lasso optimization
+        bootcv <- OptimalLasso(exp(seq(-8, -1, length = 201)), xboot, yboot)
+        # get the best lambda and coef from the refited logit model 
+        # as well as the selected predictors in bestModel
+        chosen <- bootcv$impPredictor
+        logitfit = glmnet(X_train[,chosen], y_train, family = binomial(link = "logit"), lambda = 0)
+        logitcoef = as.matrix(coef(logitfit))
+        bestlambda <- bootcv$lambda
+        
+        for (p in c("(Intercept)", chosen)){
+            coefList[p] = logitcoef[p, 1]
+        }
+        
+        cbind(bestlambda, t(Yij), t(coefList))
+        
+    }
+    
+    Yij <- res.bs[, 2:(nrow(X_train) + 1)]
+    coefMtx <- res.bs[,(nrow(X_train) + 2):ncol(res.bs)]
+    # the smoothed sd
+    bs.sd <- sapply(c("(Intercept)", colnames(X_train)), FUN = function(x) coefInference(X_train, Yij, coefMtx, x, nboot))
+    
+    res <- list(
+        smooth.coef = colMeans(coefMtx),
+        coef.smooth.sd = bs.sd,
+        coef.std = apply(coefMtx, 2, sd),
+        coef.matrix = coefMtx,
+        chosen.prob = colMeans(coefMtx != 0),
+        best.lambdas = res.bs[,1]
+    )
+    return(res)
+    
+}
+
+# return a list contains
+# smooth.coef: bootstrap smoothed regression parameter
+# smooth.sd: sd of smooth.coef
+# smooth.std: standard error of smooth.coef
+# coef.matrix: result of bootstrap regression parameters
+# chosen.prob: probability of predictors to be choose
+# best.lambdas: best lambda in each bootstrap sample
+```
+
+
+```{r implement_BootSmoothing}
+set.seed(2024)
+cl3 <- makeCluster(15 , outfile = "log.out")
+registerDoParallel(cl3)
+clusterExport(cl = cl3, c('OptimalLasso','X_train','y_train'))
+bs.res <- BootSmoothing(X_train, y_train, 1000, 5)
+stopCluster(cl3)
+```
+
+
+```{r bs_pred}
+bs.eta.train <- cbind(1, X_train) %*% bs.res$smooth.coef
+bs.eta.test <- cbind(1, X_test) %*% bs.res$smooth.coef
+
+bs.pred.train <- (1 + exp(-bs.eta.train)) ^ (-1)
+bs.pred.test <- (1 + exp(-bs.eta.test)) ^ (-1)
+
+bs.auc.train <- AUC(bs.pred.train, ifelse(y_train == "B", FALSE, TRUE))
+bs.auc.test <- AUC(bs.pred.test, ifelse(y_test == "B", FALSE, TRUE))
+```
+
+By implementing bagging, we get a AUC = `r round(bs.auc.train, 5)` on training set and a AUC = `r round(bs.auc.test, 5)` on test set. Which means the bootstrap smoothed model outperform the previous model on test data(test AUC =  `r round(logit.test.auc, 5)`)), but the results are fairly close for training sets(train AUC = `r round(logit.train.auc, 5)`).  
+
+
+### Distribution of lambdas from bootstrap replicates
+
+From the histogram and density plot below, we see that the distribution of bootstrap replicates of $\lambda$ shows a multimodal pattern. Since each bootstrap replicate is a random sample with replacement from the observed data, we are excluding different observations, and the multimodal pattern suggests that this variability in exclusion of observations may have impact in parameter selection.
+
+```{r boot_lambdas}
+library(ggplot2)
+bs.best.lambdas <- data.frame(lambdas = bs.res$best.lambdas)
+ggplot(data = bs.best.lambdas, aes(x = log(lambdas))) +
+    geom_histogram(aes(y = ..density..), binwidth = 0.1, alpha = 0.5) +
+    geom_density() +
+    geom_vline(xintercept = log(optimal.fit$lambda), lty = 2, color = 'blue') + 
+    geom_vline(xintercept = mean(log(bs.best.lambdas$lambdas)), lty = 1, color = 'red') + 
+    annotate("text", x = -7, y = 0.35, label = "5-fold-cv best lambda e^{-6.8} ", color = "blue") +
+    annotate("text", x = -5, y = 0.25, label = "bootstrap mean lambda e^{-6.2} ", color = "red")
+```
+
+
+### Variance reduction of estimated coefficients
+
+```{r bs_var_reduce}
+logisticCoef <- rep(0, 10 + 1)
+names(logisticCoef) <- names(bs.res$smooth.coef)
+for (pr in names(as.matrix(coef(logit.fit))[,])) {
+    logisticCoef[pr] = as.matrix(coef(logit.fit))[pr,]
+}
+
+bs.inference <- data.frame(
+    predictors = names(bs.res$smooth.coef),
+    origin.coef = logisticCoef,
+    smooth.coef = bs.res$smooth.coef,
+    chosen.prob = scales::percent(bs.res$chosen.prob),
+    sd = bs.res$coef.std,
+    smooth.sd = bs.res$coef.smooth.sd,
+    ci.L = bs.res$smooth.coef - qnorm(0.975) * bs.res$coef.std,
+    ci.R = bs.res$smooth.coef + qnorm(0.975) * bs.res$coef.std,
+    smoothed.ci.L = bs.res$smooth.coef - qnorm(0.975) * bs.res$coef.smooth.sd,
+    smoothed.ci.R = bs.res$smooth.coef + qnorm(0.975) * bs.res$coef.smooth.sd
+)
+
+bs.inference |> knitr::kable(caption = "Bootstrap smoothing result", digits = 3) |> 
+    kableExtra::kable_styling(latex_options = c("hold_position", "scale_down"),
+                              font_size = 8,full_width = F) |> 
+    kableExtra::add_footnote(
+        c("Bootstap time=1000", 
+          "origin.coef: estimation from selected predictors logistic regression", 
+          "smoothed.coef: estimation from Smoothed Bootstrap", 
+          "chosen.prob: chosen probability from Smoothed Bootstrap", 
+          "sd: standard deviation of estimate",
+          "smooth.sd: nonparamatric delta-method estimate of standard deviation", 
+          "ci.L, ci.R:  lower and upper CI of estimate derived from standard deviation", 
+          "ci.smoothed.L, ci.smoothed.R: lower and upper CI from nonparamatric delta-method estimate"),
+        notation = "alphabet")
+```
+
+```{r ci_plot}
+bs.inference |> 
+    select(c(predictors, smooth.coef, ci.L, ci.R, smoothed.ci.L, smoothed.ci.R)) |> 
+    rename(
+        CI_L_standard = ci.L,
+        CI_R_standard = ci.R,
+        CI_L_smoothed = smoothed.ci.L,
+        CI_R_smoothed = smoothed.ci.R,
+    ) |> 
+    pivot_longer(cols = CI_L_standard:CI_R_smoothed, 
+                 names_to = c("drop", "LR","type"), 
+                 names_sep = "_",
+                 values_to = "bound" ) |> 
+    select(c("predictors", "smooth.coef", "LR", "type", "bound")) |> 
+    pivot_wider(names_from = LR, values_from = bound) |> 
+    ggplot(aes(x = predictors, y = smooth.coef, color = type, group = type)) + 
+    geom_errorbar(aes(ymin = L, ymax = R), color = "black", position = position_dodge(width = 0.4)) +
+    geom_line(size = .8, position = position_dodge(width = 0.4)) +
+    geom_point(size = 1, shape = 3, position = position_dodge(width = 0.4)) +
+    ylab("Estimate with CI") +
+    labs(fill = "") +
+    theme(legend.justification = c(1, 0), legend.position = c(1, 0), axis.text.x = element_text(angle = 45, vjust = 0.6))
+```
+
+
+From the table and error bar plot above, we found that the bootstrap smoothed interval is narrower than the standard interval, corresponding to a reduced variance.
+
+### Conclusion
+
+In summary, by implementing the bootstrap smoothing, which takes the model selection process into account, we improved the model performance in prediction. And the bootstrap smoothing also gives us a nonparametric delta-method estimate of standard deviation with a narrower 95% confidence interval.
+
+## Bibilography
+
+1. Rizzo, M.L. (2019). Statistical Computing with R (2nd ed.). Chapman and Hall/CRC. https://doi.org/10.1201/9780429192760
+
+2. Bradley Efron (2014) Estimation and Accuracy After Model Selection, Journal of the American Statistical Association, 109:507, 991-1007, DOI: 10.1080/01621459.2013.823775
+
+
+

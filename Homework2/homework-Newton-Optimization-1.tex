@@ -1,0 +1,1398 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Homework on Newton's methods},
+  pdfauthor={Zhuodiao Kuang(zk2275)},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Homework on Newton's methods}
+\author{Zhuodiao Kuang(zk2275)}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{problem-1}{%
+\section{Problem 1:}\label{problem-1}}
+
+Design a Golden-Search algorithm to find the MLE in the Example 1.2 (see
+the lecture notes) and implement it into \textbf{R}.
+
+\hypertarget{answer-your-answer-starts-here}{%
+\section{Answer: your answer starts
+here\ldots{}}\label{answer-your-answer-starts-here}}
+
+Example 1.2 in the lecture notes is about finding the Maximum Likelihood
+Estimation (MLE) for a trinomial distribution where the probabilities
+are determined by a single parameter, \(\theta\). The optimization
+problem involves maximizing a likelihood function expressed in terms of
+\(\theta\). The likelihood function is given by the sum of
+\((x_1 \log(\theta + 2) + x_2 \log(1 - \theta) + x_3 \log(\theta)\),
+with \(\theta\) constrained between 0 and 1.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{229}\NormalTok{)}
+\CommentTok{\# Define the likelihood function for the trinomial distribution}
+\NormalTok{likelihood\_function }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(theta, x1, x2, x3) \{}
+\NormalTok{  term1 }\OtherTok{\textless{}{-}}\NormalTok{ x1 }\SpecialCharTok{*} \FunctionTok{log}\NormalTok{(theta }\SpecialCharTok{+} \DecValTok{2}\NormalTok{)}
+\NormalTok{  term2 }\OtherTok{\textless{}{-}}\NormalTok{ x2 }\SpecialCharTok{*} \FunctionTok{log}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ theta)}
+\NormalTok{  term3 }\OtherTok{\textless{}{-}}\NormalTok{ x3 }\SpecialCharTok{*} \FunctionTok{log}\NormalTok{(theta)}
+\NormalTok{  L}\OtherTok{\textless{}{-}}\FunctionTok{sum}\NormalTok{(term1 }\SpecialCharTok{+}\NormalTok{ term2 }\SpecialCharTok{+}\NormalTok{ term3)}
+  \FunctionTok{return}\NormalTok{(L)}
+\NormalTok{\}}
+
+\CommentTok{\# Golden{-}Search algorithm}
+\NormalTok{golden\_search }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(f, lower, upper, }\AttributeTok{tol =} \FloatTok{0.0001}\NormalTok{) \{}
+\NormalTok{  gconstant }\OtherTok{\textless{}{-}}\NormalTok{   (}\FunctionTok{sqrt}\NormalTok{(}\DecValTok{5}\NormalTok{) }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}\SpecialCharTok{/}\DecValTok{2} 
+\NormalTok{  c }\OtherTok{\textless{}{-}}\NormalTok{ upper }\SpecialCharTok{{-}}\NormalTok{ (upper }\SpecialCharTok{{-}}\NormalTok{ lower) }\SpecialCharTok{*}\NormalTok{ gconstant}
+\NormalTok{  d }\OtherTok{\textless{}{-}}\NormalTok{ lower }\SpecialCharTok{+}\NormalTok{ (upper }\SpecialCharTok{{-}}\NormalTok{ lower) }\SpecialCharTok{*}\NormalTok{ gconstant}
+  \ControlFlowTok{while}\NormalTok{ (}\FunctionTok{abs}\NormalTok{(c }\SpecialCharTok{{-}}\NormalTok{ d) }\SpecialCharTok{\textgreater{}}\NormalTok{ tol) \{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{f}\NormalTok{(c) }\SpecialCharTok{\textless{}} \FunctionTok{f}\NormalTok{(d)) \{}
+\NormalTok{      lower }\OtherTok{\textless{}{-}}\NormalTok{ c}
+\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{      upper }\OtherTok{\textless{}{-}}\NormalTok{ d}
+\NormalTok{    \}}
+\NormalTok{    c }\OtherTok{\textless{}{-}}\NormalTok{ upper }\SpecialCharTok{{-}}\NormalTok{ (upper }\SpecialCharTok{{-}}\NormalTok{ lower) }\SpecialCharTok{*}\NormalTok{ gconstant}
+\NormalTok{    d }\OtherTok{\textless{}{-}}\NormalTok{ lower }\SpecialCharTok{+}\NormalTok{ (upper }\SpecialCharTok{{-}}\NormalTok{ lower) }\SpecialCharTok{*}\NormalTok{ gconstant}
+\NormalTok{  \}}
+  \FunctionTok{return}\NormalTok{((lower }\SpecialCharTok{+}\NormalTok{ upper) }\SpecialCharTok{/} \DecValTok{2}\NormalTok{)}
+\NormalTok{\}}
+
+\CommentTok{\# Example usage }
+\CommentTok{\# Generate Xdata}
+\NormalTok{n }\OtherTok{=} \DecValTok{100}
+\NormalTok{theta }\OtherTok{\textless{}{-}} \FloatTok{0.2}
+\NormalTok{Xdata }\OtherTok{\textless{}{-}} \FunctionTok{rmultinom}\NormalTok{(n, }\DecValTok{40}\NormalTok{, }\FunctionTok{c}\NormalTok{((}\DecValTok{2} \SpecialCharTok{+}\NormalTok{ theta)}\SpecialCharTok{/}\DecValTok{4}\NormalTok{, (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ theta)}\SpecialCharTok{/}\DecValTok{2}\NormalTok{, theta}\SpecialCharTok{/}\DecValTok{4}\NormalTok{))}
+
+
+\NormalTok{x1 }\OtherTok{\textless{}{-}}\NormalTok{ Xdata[}\DecValTok{1}\NormalTok{,]  }
+\NormalTok{x2 }\OtherTok{\textless{}{-}}\NormalTok{ Xdata[}\DecValTok{2}\NormalTok{,]  }
+\NormalTok{x3 }\OtherTok{\textless{}{-}}\NormalTok{ Xdata[}\DecValTok{3}\NormalTok{,]  }
+\CommentTok{\# Find the MLE of theta}
+\NormalTok{theta\_mle }\OtherTok{\textless{}{-}} \FunctionTok{golden\_search}\NormalTok{(}\ControlFlowTok{function}\NormalTok{(theta) }\FunctionTok{likelihood\_function}\NormalTok{(theta, x1, x2, x3), }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(theta\_mle)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.1936355
+\end{verbatim}
+
+\hypertarget{problem-2}{%
+\section{Problem 2:}\label{problem-2}}
+
+Design an optmization algorithm to find the minimum of the continuously
+differentiable function \[f(x) =-e^{-x}\sin(x)\] on the closed interval
+\([0,1.5]\). Write out your algorithm and implement it into \textbf{R}.
+
+\hypertarget{answer-your-answer-starts-here-1}{%
+\section{Answer: your answer starts
+here\ldots{}}\label{answer-your-answer-starts-here-1}}
+
+\hypertarget{algorithm-steps}{%
+\subsubsection{Algorithm Steps:}\label{algorithm-steps}}
+
+\textbf{Using Newton's method:} - For each iteration, compute \(f'(x)\)
+and \(f''(x)\) at the current point \(x\). - Update the guess using a
+modified Newton step: \(x_{new} = x -\frac{f'(x)}{f''(x)}\). - Check for
+convergence: if \(|x_{new} - x| < \epsilon\), then stop and return
+\(x_{new}\) as the minimum. - If the maximum number of iterations is
+reached without convergence, consider adjusting the initial guess or the
+damping factor.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{f }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}
+  \SpecialCharTok{{-}}\FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{x) }\SpecialCharTok{*} \FunctionTok{sin}\NormalTok{(x)}
+\NormalTok{\}}
+
+\NormalTok{f\_deriv }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}
+  \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{x) }\SpecialCharTok{*}\NormalTok{ (}\FunctionTok{sin}\NormalTok{(x) }\SpecialCharTok{{-}} \FunctionTok{cos}\NormalTok{(x))}
+\NormalTok{\}}
+
+\NormalTok{f\_double\_deriv }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}
+  \DecValTok{2} \SpecialCharTok{*} \FunctionTok{cos}\NormalTok{(x)}\SpecialCharTok{*}\FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{x) }
+\NormalTok{\}}
+
+\NormalTok{newton\_method }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(f\_deriv, f\_double\_deriv, }
+\NormalTok{                          start\_point, }\AttributeTok{tol =} \FloatTok{1e{-}5}\NormalTok{, }\AttributeTok{max\_iter =} \DecValTok{100}\NormalTok{) \{}
+\NormalTok{  x\_current }\OtherTok{\textless{}{-}}\NormalTok{ start\_point}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{max\_iter) \{}
+\NormalTok{    x\_next }\OtherTok{\textless{}{-}}\NormalTok{ x\_current }\SpecialCharTok{{-}} \FunctionTok{f\_deriv}\NormalTok{(x\_current) }\SpecialCharTok{/} \FunctionTok{f\_double\_deriv}\NormalTok{(x\_current)}
+     \FunctionTok{print}\NormalTok{(x\_next )}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{abs}\NormalTok{(x\_next }\SpecialCharTok{{-}}\NormalTok{ x\_current) }\SpecialCharTok{\textless{}}\NormalTok{ tol) \{}
+     
+      \ControlFlowTok{if}\NormalTok{ (x\_next }\SpecialCharTok{\textgreater{}=} \DecValTok{0} \SpecialCharTok{\&\&}\NormalTok{ x\_next }\SpecialCharTok{\textless{}=} \FloatTok{1.5}\NormalTok{) \{}
+        
+        \FunctionTok{return}\NormalTok{(x\_next)}
+\NormalTok{      \} }\ControlFlowTok{else}\NormalTok{ \{}
+        \ControlFlowTok{break} \CommentTok{\# If outside the interval, break and return NA}
+\NormalTok{      \}}
+\NormalTok{    \}}
+\NormalTok{    x\_current }\OtherTok{\textless{}{-}}\NormalTok{ x\_next}
+\NormalTok{  \}}
+  \FunctionTok{return}\NormalTok{(}\ConstantTok{NA}\NormalTok{) }\CommentTok{\# Return NA if no convergence within the interval or max iterations reached}
+\NormalTok{\}}
+
+\CommentTok{\# Choose an initial guess within the interval [0, 1.5]}
+\NormalTok{start\_point }\OtherTok{\textless{}{-}} \FloatTok{0.5}
+
+\CommentTok{\# Apply the Newton Method}
+\NormalTok{solution }\OtherTok{\textless{}{-}} \FunctionTok{newton\_method}\NormalTok{(f\_deriv, f\_double\_deriv, start\_point)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.7268488
+## [1] 0.7822195
+## [1] 0.7853881
+## [1] 0.7853982
+## [1] 0.7853982
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Display the solution}
+\ControlFlowTok{if}\NormalTok{ (}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(solution)) \{}
+  \FunctionTok{cat}\NormalTok{(}\StringTok{"The minimum is located at x ="}\NormalTok{, solution, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+  \FunctionTok{cat}\NormalTok{(}\StringTok{"The minimum value of the function is f(x) ="}\NormalTok{, }\FunctionTok{f}\NormalTok{(solution), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{\} }\ControlFlowTok{else}\NormalTok{ \{}
+  \FunctionTok{cat}\NormalTok{(}\StringTok{"The algorithm did not converge to a solution within the interval.}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## The minimum is located at x = 0.7853982 
+## The minimum value of the function is f(x) = -0.3223969
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Define the function f(x) = {-}exp({-}x) * sin(x)}
+\NormalTok{f }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}
+  \SpecialCharTok{{-}}\FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{x) }\SpecialCharTok{*} \FunctionTok{sin}\NormalTok{(x)}
+\NormalTok{\}}
+
+\CommentTok{\# Create a sequence of x values from 0 to 1.5}
+\NormalTok{x\_values }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{1.5}\NormalTok{, }\FloatTok{1.5}\NormalTok{, }\AttributeTok{by =} \FloatTok{0.01}\NormalTok{)}
+
+\CommentTok{\# Calculate y values using the defined function}
+\NormalTok{y\_values }\OtherTok{\textless{}{-}} \FunctionTok{f}\NormalTok{(x\_values)}
+
+\CommentTok{\# Create a data frame for plotting}
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x\_values, }\AttributeTok{y =}\NormalTok{ y\_values)}
+
+\CommentTok{\# Plot the function using ggplot2}
+\FunctionTok{ggplot}\NormalTok{(data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{y =}\NormalTok{ y)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+} 
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Plot of f(x) = {-}exp({-}x) * sin(x)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{xlab}\NormalTok{(}\StringTok{"x"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{ylab}\NormalTok{(}\StringTok{"f(x)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{homework-Newton-Optimization-1_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\hypertarget{problem-3}{%
+\section{Problem 3}\label{problem-3}}
+
+The Poisson distribution is often used to model ``count'\,' data ---
+e.g., the number of events in a given time period.\\
+The Poisson regression model states that
+\[Y_i \sim \textrm{Poisson}(\lambda_i),\] where
+\[\log \lambda_i = \alpha + \beta x_i \] for some explanatory variable
+\(x_i\). The question is how to estimate \(\alpha\) and \(\beta\) given
+a set of independent data
+\((x_1, Y_1), (x_2, Y_2), \ldots, (x_n, Y_n)\).
+
+\begin{enumerate}
+\item Modify the Newton-Raphson function from the class notes to include
+a step-halving step.
+\item Further modify this function to ensure that the direction of the
+step is an ascent direction.   (If it is not, the program should take appropriate
+action.)
+\item Write code to apply the resulting modified Newton-Raphson function
+to compute maximum likelihood estimates for $\alpha$ and $\beta$
+in the Poisson regression setting.
+\end{enumerate}
+
+\vskip 5mm
+
+\noindent The Poisson distribution is given by
+\[P(Y=y) = \frac{\lambda^y e^{-\lambda}}{y!}\] for \(\lambda > 0\).
+
+\hypertarget{answer-your-answer-starts-here-2}{%
+\section{Answer: your answer starts
+here\ldots{}}\label{answer-your-answer-starts-here-2}}
+
+To address the given tasks, we'll modify the Newton-Raphson method for
+Poisson regression to include a step-halving step and ensure the step is
+in an ascent direction for estimating \(\alpha\) and \(\beta\).
+
+The likelihood function for a set of \(n\) independent observations
+given this model is:
+
+\[ L(\alpha, \beta | y, x) = \prod_{i=1}^{n} \frac{e^{-\lambda_i} \lambda_i^{y_i}}{y_i!} \]
+
+Taking the logarithm of the likelihood function gives the
+log-likelihood:
+
+\[ \ell(\alpha, \beta | y, x) = \sum_{i=1}^{n} \left( -\lambda_i + y_i \log(\lambda_i) - \log(y_i!) \right) \]
+
+Substituting \(\lambda_i = e^{\alpha + \beta x_i}\) into the
+log-likelihood gives:
+
+\[ \ell(\alpha, \beta | y, x) = \sum_{i=1}^{n} \left( -e^{\alpha + \beta x_i} + y_i (\alpha + \beta x_i) - \log(y_i!) \right) \]
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Include Step-Halving}: To ensure convergence, we'll
+  incorporate a step-halving procedure. If an iteration does not
+  decrease the log-likelihood, we reduce the step size by half and
+  reevaluate.
+\item
+  \textbf{Ensure Ascent Direction}: Before updating the parameters,
+  we'll check if the step increases the log-likelihood. If not, we
+  adjust the direction or reduce the step size.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{229}\NormalTok{) }\CommentTok{\# For reproducibility}
+
+\CommentTok{\# Generate  data}
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{1000} 
+\NormalTok{x }\OtherTok{\textless{}{-}} \FunctionTok{runif}\NormalTok{(n, }\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{) }
+\NormalTok{alpha }\OtherTok{\textless{}{-}} \FloatTok{0.5} \CommentTok{\# True alpha}
+\NormalTok{beta }\OtherTok{\textless{}{-}} \FloatTok{0.1} \CommentTok{\# True beta}
+
+\CommentTok{\# Calculate lambda for the Poisson distribution}
+\NormalTok{lambda }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(alpha }\SpecialCharTok{+}\NormalTok{ beta }\SpecialCharTok{*}\NormalTok{ x)}
+\NormalTok{Y }\OtherTok{\textless{}{-}} \FunctionTok{rpois}\NormalTok{(n, lambda)}
+
+\CommentTok{\# Check the first few values}
+\FunctionTok{head}\NormalTok{(x)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 7.887599 5.782350 4.363164 7.602662 4.431796 2.349943
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{head}\NormalTok{(Y)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5 0 4 7 3 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Log{-}likelihood function for Poisson regression}
+\NormalTok{log\_likelihood }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(alpha, beta, x, Y) \{}
+\NormalTok{  lambda }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(alpha }\SpecialCharTok{+}\NormalTok{ beta }\SpecialCharTok{*}\NormalTok{ x)}
+  \FunctionTok{sum}\NormalTok{(Y }\SpecialCharTok{*} \FunctionTok{log}\NormalTok{(lambda) }\SpecialCharTok{{-}}\NormalTok{ lambda)}
+\NormalTok{\}}
+
+\CommentTok{\# Gradient of the log{-}likelihood}
+\NormalTok{gradient }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(alpha, beta, x, Y) \{}
+\NormalTok{  lambda }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(alpha }\SpecialCharTok{+}\NormalTok{ beta }\SpecialCharTok{*}\NormalTok{ x)}
+\NormalTok{  grad\_alpha }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(Y }\SpecialCharTok{{-}}\NormalTok{ lambda)}
+\NormalTok{  grad\_beta }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{((Y }\SpecialCharTok{{-}}\NormalTok{ lambda) }\SpecialCharTok{*}\NormalTok{ x)}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{c}\NormalTok{(grad\_alpha, grad\_beta))}
+\NormalTok{\}}
+
+\CommentTok{\# Hessian matrix of the log{-}likelihood}
+\NormalTok{hessian }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(alpha, beta, x, Y) \{}
+\NormalTok{  lambda }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(alpha }\SpecialCharTok{+}\NormalTok{ beta }\SpecialCharTok{*}\NormalTok{ x)}
+\NormalTok{  hess }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\FunctionTok{sum}\NormalTok{(lambda), }\SpecialCharTok{{-}}\FunctionTok{sum}\NormalTok{(lambda }\SpecialCharTok{*}\NormalTok{ x),}
+                   \SpecialCharTok{{-}}\FunctionTok{sum}\NormalTok{(lambda }\SpecialCharTok{*}\NormalTok{ x), }\SpecialCharTok{{-}}\FunctionTok{sum}\NormalTok{(lambda }\SpecialCharTok{*}\NormalTok{ x}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)), }\AttributeTok{nrow=}\DecValTok{2}\NormalTok{)}
+  \FunctionTok{return}\NormalTok{(hess)}
+\NormalTok{\}}
+
+\CommentTok{\# Newton{-}Raphson method with step{-}halving and ascent direction check}
+\NormalTok{newton\_raphson }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x, Y, alpha\_init, beta\_init, }\AttributeTok{tol =} \FloatTok{1e{-}6}\NormalTok{, }\AttributeTok{max\_iter =} \DecValTok{100}\NormalTok{) \{}
+\NormalTok{  alpha }\OtherTok{\textless{}{-}}\NormalTok{ alpha\_init}
+\NormalTok{  beta }\OtherTok{\textless{}{-}}\NormalTok{ beta\_init}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{max\_iter) \{}
+\NormalTok{    grad }\OtherTok{\textless{}{-}} \FunctionTok{gradient}\NormalTok{(alpha, beta, x, Y)}
+\NormalTok{    hess }\OtherTok{\textless{}{-}} \FunctionTok{hessian}\NormalTok{(alpha, beta, x, Y)}
+\NormalTok{    update }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(hess) }\SpecialCharTok{\%*\%}\NormalTok{ grad}
+    
+     \CommentTok{\# Double check if the direction is an ascent direction}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{t}\NormalTok{(grad) }\SpecialCharTok{\%*\%}\NormalTok{ update }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{) \{}
+      \FunctionTok{cat}\NormalTok{(}\StringTok{"Iteration"}\NormalTok{, i, }\StringTok{": Direction is not an ascent direction. Adjusting step...}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\NormalTok{      update }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\NormalTok{update}
+\NormalTok{    \}}
+    
+    \CommentTok{\# Step{-}halving}
+\NormalTok{    step\_size }\OtherTok{\textless{}{-}} \DecValTok{1}
+\NormalTok{    new\_alpha }\OtherTok{\textless{}{-}}\NormalTok{ alpha }\SpecialCharTok{{-}}\NormalTok{ step\_size }\SpecialCharTok{*}\NormalTok{ update[}\DecValTok{1}\NormalTok{]}
+\NormalTok{    new\_beta }\OtherTok{\textless{}{-}}\NormalTok{ beta }\SpecialCharTok{{-}}\NormalTok{ step\_size }\SpecialCharTok{*}\NormalTok{ update[}\DecValTok{2}\NormalTok{]}
+    
+    \CommentTok{\# Ensure Ascent Direction}
+    \ControlFlowTok{while}\NormalTok{ (}\FunctionTok{log\_likelihood}\NormalTok{(new\_alpha, new\_beta, x, Y) }\SpecialCharTok{\textless{}} \FunctionTok{log\_likelihood}\NormalTok{(alpha, beta, x, Y)) \{ }
+      \CommentTok{\# research for directions}
+\NormalTok{      step\_size }\OtherTok{\textless{}{-}}\NormalTok{ step\_size }\SpecialCharTok{/} \DecValTok{2}
+\NormalTok{      new\_alpha }\OtherTok{\textless{}{-}}\NormalTok{ alpha }\SpecialCharTok{{-}}\NormalTok{ step\_size }\SpecialCharTok{*}\NormalTok{ update[}\DecValTok{1}\NormalTok{]}
+\NormalTok{      new\_beta }\OtherTok{\textless{}{-}}\NormalTok{ beta }\SpecialCharTok{{-}}\NormalTok{ step\_size }\SpecialCharTok{*}\NormalTok{ update[}\DecValTok{2}\NormalTok{]}
+      \ControlFlowTok{if}\NormalTok{ (step\_size }\SpecialCharTok{\textless{}}\NormalTok{ tol) }\ControlFlowTok{break}
+\NormalTok{    \}}
+    
+    \CommentTok{\# Check for convergence}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{sqrt}\NormalTok{(}\FunctionTok{sum}\NormalTok{(update}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)) }\SpecialCharTok{\textless{}}\NormalTok{ tol) \{}
+      \FunctionTok{cat}\NormalTok{(}\StringTok{"Converged in"}\NormalTok{, i, }\StringTok{"iterations}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+      \ControlFlowTok{break}
+\NormalTok{    \}}
+    
+\NormalTok{    alpha }\OtherTok{\textless{}{-}}\NormalTok{ new\_alpha}
+\NormalTok{    beta }\OtherTok{\textless{}{-}}\NormalTok{ new\_beta}
+\NormalTok{  \}}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{c}\NormalTok{(alpha, beta))}
+\NormalTok{\}}
+
+
+\NormalTok{alpha\_init }\OtherTok{\textless{}{-}}\NormalTok{ beta\_init }\OtherTok{\textless{}{-}} \DecValTok{0}
+\NormalTok{estimates }\OtherTok{\textless{}{-}} \FunctionTok{newton\_raphson}\NormalTok{(x, Y, alpha\_init, beta\_init)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Converged in 5 iterations
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"True alpha:"}\NormalTok{, alpha, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{True beta:"}\NormalTok{, beta, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## True alpha: 0.5 
+## True beta: 0.1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Estimated alpha:"}\NormalTok{, estimates[}\DecValTok{1}\NormalTok{], }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Estimated beta:"}\NormalTok{, estimates[}\DecValTok{2}\NormalTok{], }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Estimated alpha: 0.5143557 
+## Estimated beta: 0.09938042
+\end{verbatim}
+
+\hypertarget{problem-4-breast-cancer-diagnosis}{%
+\section{Problem 4: Breast Cancer
+Diagnosis}\label{problem-4-breast-cancer-diagnosis}}
+
+\hypertarget{background}{%
+\subsection{Background}\label{background}}
+
+The dataset ``breast-cancer.csv'' consists of 569 rows and 33 columns.
+The first column, labeled ``ID'', contains individual breast tissue
+images. The second column, labeled ``Diagnosis'', identifies whether the
+image is from a cancerous or benign tissue (M=malignant, B=benign).
+There are 357 benign and 212 malignant cases. The other 30 columns
+represent the mean, standard deviation, and largest values of the
+distributions of 10 features computed for the cell nuclei.
+
+\begin{itemize}
+\item radius (mean of distances from center to points on the perimeter)
+\item texture (standard deviation of gray-scale values)
+\item perimeter
+\item area
+\item smoothness (local variation in radius lengths)
+\item compactness (perimeter\^ 2 / area - 1.0)
+\item concavity (severity of concave portions of the contour)
+\item concave points (number of concave portions of the contour)
+\item symmetry
+\item fractal dimension ("coastline approximation" - 1)
+\end{itemize}
+
+The goal of the exercise is to build a predictive model based on
+logistic regression to facilitate cancer diagnosis;
+
+\hypertarget{tasks}{%
+\subsection{Tasks:}\label{tasks}}
+
+\begin{enumerate}
+
+The dataset "breast-cancer.csv" consists of 569 rows and 33 columns. The first column, labeled "ID", contains individual breast tissue images. The second column, labeled "Diagnosis", identifies whether the image is from a cancerous or benign tissue (M=malignant, B=benign). There are 357 benign and 212 malignant cases. The other 30 columns represent the mean, standard deviation, and largest values of the distributions of 10 features computed for the cell nuclei.
+
+ Build a logistic-LASSO model to classify images as malignant or benign. Use Lasso to automatically select features and implement a path-wise coordinate-wise optimization algorithm to obtain a path of solutions with a sequence of descending $\lambda$ values.
+
+ Write a report to summarize your findings.
+\end{enumerate}
+
+\hypertarget{report}{%
+\section{Report}\label{report}}
+
+\hypertarget{path-wise-coordinate-descendent}{%
+\subsection{Path-wise coordinate
+descendent}\label{path-wise-coordinate-descendent}}
+
+Path-wise coordinate descent is a popular optimization technique used
+for fitting Lasso models. Lasso (Least Absolute Shrinkage and Selection
+Operator) is a regression analysis method that performs both variable
+selection and regularization in order to enhance the prediction accuracy
+and interpretability of the statistical model it produces.
+
+\hypertarget{how-path-wise-coordinate-descent-works}{%
+\subsubsection{How Path-wise Coordinate Descent
+Works}\label{how-path-wise-coordinate-descent-works}}
+
+Path-wise coordinate descent optimizes the Lasso problem by iteratively
+updating one parameter at a time while keeping the others fixed. This
+approach simplifies the optimization problem into a series of
+one-dimensional problems that are much easier to solve.
+
+\hypertarget{algorithm-steps-1}{%
+\subsubsection{Algorithm Steps}\label{algorithm-steps-1}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Initialization}: Start with an initial estimate for \(\beta\),
+  often \(\beta = 0\).
+\item
+  \textbf{Cyclically Update Each Coordinate}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    For each coefficient \(\beta_j\) in the vector \(\beta\), update the
+    value of \(\beta_j\) by solving the one-dimensional optimization
+    problem, which involves minimizing the objective function with
+    respect to \(\beta_j\), keeping all other coefficients fixed.
+  \item
+    This step often uses the soft-thresholding function due to the L1
+    penalty in the Lasso objective. The updated value for \(\beta_j\) is
+    given by:
+    \[ \beta_j = \text{S}( \frac{1}{n} X_j^T(y - X_{-j}\beta_{-j}), \lambda ) \]
+    where \(X_j\) is the \(j^{th}\) column of \(X\), \(X_{-j}\) is the
+    matrix \(X\) excluding \(X_j\), \(\beta_{-j}\) is the coefficient
+    vector excluding \(\beta_j\), and \(\text{S}\) is the
+    soft-thresholding operator.
+  \end{itemize}
+\item
+  \textbf{Convergence Check}: Repeat the cyclic update until the changes
+  in \(\beta\) are below a certain threshold, indicating convergence.
+\end{enumerate}
+
+\hypertarget{key-features}{%
+\subsubsection{Key Features}\label{key-features}}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Efficiency}: The path-wise coordinate descent method is
+  computationally efficient, especially for high-dimensional datasets,
+  because it breaks down the complex optimization problem into simpler
+  one-dimensional updates.
+\item
+  \textbf{Sparsity}: By leveraging the L1 penalty, it effectively
+  produces sparse models, where irrelevant variables are given
+  coefficients of zero, thus performing variable selection.
+\item
+  \textbf{Path Solution}: It can efficiently compute the entire path of
+  solutions for a sequence of \(\lambda\) values, which is useful for
+  selecting the best model through cross-validation.
+\end{itemize}
+
+Path-wise coordinate descent is favored for its simplicity, efficiency,
+and effectiveness in handling large, sparse datasets common in machine
+learning and statistical applications.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Pathwise }\OtherTok{=} \ControlFlowTok{function}\NormalTok{(x, y, }\AttributeTok{lambda =} \DecValTok{0}\NormalTok{, }\AttributeTok{beta =} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FunctionTok{ncol}\NormalTok{(x)), }\AttributeTok{tol =} \FloatTok{0.01}\NormalTok{)\{}
+\NormalTok{  step }\OtherTok{=} \DecValTok{1}
+  
+  \CommentTok{\# Calculate the initial loglike loss}
+\NormalTok{  iniLL }\OtherTok{=} \SpecialCharTok{{-}}\FunctionTok{sum}\NormalTok{((y }\SpecialCharTok{*}\NormalTok{ (x }\SpecialCharTok{\%*\%}\NormalTok{ beta) }\SpecialCharTok{{-}} \FunctionTok{log}\NormalTok{(}\DecValTok{1} \SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(x }\SpecialCharTok{\%*\%}\NormalTok{ beta)))) }\SpecialCharTok{+}\NormalTok{ lambda }\SpecialCharTok{*} \FunctionTok{sum}\NormalTok{(beta[}\DecValTok{2}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(beta)])}
+  
+  \CommentTok{\# Optimize log likelihood loss}
+  \ControlFlowTok{while}\NormalTok{ (}\DecValTok{1}\NormalTok{) \{}
+    \CommentTok{\# Notations for difference in beta now and before}
+\NormalTok{    Changed }\OtherTok{=} \FunctionTok{rep}\NormalTok{(}\ConstantTok{TRUE}\NormalTok{, }\FunctionTok{ncol}\NormalTok{(x))}
+    \CommentTok{\# restore the initial value}
+\NormalTok{    beta\_temp }\OtherTok{=}\NormalTok{ beta}
+    
+    \CommentTok{\# coordinate descendent}
+    \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(x)) \{}
+\NormalTok{      p }\OtherTok{=} \DecValTok{1} \SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{(x }\SpecialCharTok{\%*\%}\NormalTok{ beta)))}
+\NormalTok{      e }\OtherTok{=}\NormalTok{ y }\SpecialCharTok{{-}}\NormalTok{ p }
+\NormalTok{      w }\OtherTok{=}\NormalTok{ p }\SpecialCharTok{*}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ p)}
+\NormalTok{      diff }\OtherTok{=}\NormalTok{ x }\SpecialCharTok{\%*\%}\NormalTok{ beta }\SpecialCharTok{{-}}\NormalTok{ x[, }\SpecialCharTok{{-}}\NormalTok{j] }\SpecialCharTok{\%*\%}\NormalTok{ beta[}\SpecialCharTok{{-}}\NormalTok{j]}
+\NormalTok{      beta\_new }\OtherTok{=} \FunctionTok{sum}\NormalTok{(x[, j] }\SpecialCharTok{*}\NormalTok{ ( w }\SpecialCharTok{*}\NormalTok{ diff }\SpecialCharTok{+}\NormalTok{ e )) }
+      
+      \DocumentationTok{\#\# not intercept, use soft threshold \#\#}
+      \ControlFlowTok{if}\NormalTok{ (j }\SpecialCharTok{\textgreater{}} \DecValTok{1}\NormalTok{) }
+\NormalTok{      \{beta\_new }\OtherTok{=} \FunctionTok{sign}\NormalTok{(beta\_new) }\SpecialCharTok{*} \FunctionTok{pmax}\NormalTok{(}\FunctionTok{abs}\NormalTok{(beta\_new) }\SpecialCharTok{{-}}\NormalTok{ lambda, }\DecValTok{0}\NormalTok{)\}}
+      \DocumentationTok{\#\#}
+      
+\NormalTok{      beta\_new }\OtherTok{=}\NormalTok{ beta\_new }\SpecialCharTok{/}\NormalTok{ (}\FunctionTok{t}\NormalTok{(w) }\SpecialCharTok{\%*\%}\NormalTok{ (x[, j]}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+      
+      \CommentTok{\# Label if not changed too much}
+      \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{abs}\NormalTok{(beta\_new }\SpecialCharTok{{-}}\NormalTok{ beta[j]) }\SpecialCharTok{\textless{}}\NormalTok{ tol) \{}
+\NormalTok{        Changed[j] }\OtherTok{=} \ConstantTok{FALSE}
+\NormalTok{      \}}
+      
+      \CommentTok{\# save the new beta}
+\NormalTok{      beta[j] }\OtherTok{=}\NormalTok{ beta\_new}
+\NormalTok{    \}}
+    
+    \DocumentationTok{\#\#\# coordinate descendant ends at this turn }\AlertTok{\#\#\#}
+    
+    
+    \CommentTok{\# calculate loglike loss after all the coeffient have been updated at this turn}
+\NormalTok{    loglike\_loss }\OtherTok{=} \SpecialCharTok{{-}}\FunctionTok{sum}\NormalTok{(w }\SpecialCharTok{*}\NormalTok{ (y }\SpecialCharTok{*}\NormalTok{ (x }\SpecialCharTok{\%*\%}\NormalTok{ beta) }\SpecialCharTok{{-}} \FunctionTok{log}\NormalTok{(}\DecValTok{1} \SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(x }\SpecialCharTok{\%*\%}\NormalTok{ beta)))) }
+
+    
+    \FunctionTok{print}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"step = "}\NormalTok{, step, }\StringTok{" lambda = "}\NormalTok{, lambda, }\StringTok{" loss: "}\NormalTok{, loglike\_loss))}
+    
+
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.na}\NormalTok{(loglike\_loss) }\SpecialCharTok{||}\NormalTok{ iniLL }\SpecialCharTok{\textless{}}\NormalTok{ loglike\_loss)\{}
+      \FunctionTok{print}\NormalTok{(}\StringTok{"Initial log likelihood loss is smaller, stop the iteration."}\NormalTok{)}
+      \FunctionTok{return}\NormalTok{(beta\_temp)}
+\NormalTok{    \}}
+   
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{abs}\NormalTok{(iniLL }\SpecialCharTok{{-}}\NormalTok{ loglike\_loss) }\SpecialCharTok{\textless{}}\NormalTok{ tol)\{}
+      \FunctionTok{print}\NormalTok{(}\StringTok{"normal end"}\NormalTok{)}
+      \FunctionTok{return}\NormalTok{(beta\_temp)}
+\NormalTok{    \}}
+      
+    \CommentTok{\# if all the Changed flags equal to FALSE, end up the function, and return the beta at previous step.}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{sum}\NormalTok{(Changed) }\SpecialCharTok{==} \DecValTok{0}\NormalTok{) \{}
+      \FunctionTok{print}\NormalTok{(}\StringTok{"normal end"}\NormalTok{)}
+      \FunctionTok{return}\NormalTok{(beta\_temp)}
+\NormalTok{    \}}
+    
+    \CommentTok{\# default setting}
+\NormalTok{    iniLL }\OtherTok{=}\NormalTok{ loglike\_loss}
+\NormalTok{    step }\OtherTok{=}\NormalTok{ step }\SpecialCharTok{+} \DecValTok{1}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{training-model}{%
+\section{training model}\label{training-model}}
+
+This function is used as an interface to calculate the logit lasso model
+and sort the path of lambda. In this funtion, the original data need to
+be put in and intercept, standardization will be calculated
+automatically.
+
+Input:
+
+\begin{itemize}
+\item
+  x: original predictors without intercept and standarization
+\item
+  y: response variables
+\item
+  lambda: a scale or a vector of lambdas. The order can be arbitrary.
+  This function will sort the descending order automatically. If
+  parameter ``include\_zero\_lambda'' is TRUE, a zero lambda will
+  append.
+\item
+  tol: threshold to put in function ``Pathwise'' and does not use in
+  this function.
+\item
+  warm\_start: If lambda is a vector will more than 1 element, the
+  initial beta of each lambda will be the same as the result obtained
+  with last lambda. If ``warm\_start'' is FALSE, the initial beta will
+  be 0 of any beta.
+\item
+  include\_zero\_lambda: If this parameter is TRUE, a zero lambda will
+  be appended to parameter ``lambda''. And lambda equals to 0 means no
+  regularization.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{logit\_lasso }\OtherTok{=} \ControlFlowTok{function}\NormalTok{(x, y, lambda, }\AttributeTok{tol =} \FloatTok{0.01}\NormalTok{, }\AttributeTok{warm\_start =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{include\_zero\_lambda =} \ConstantTok{TRUE}\NormalTok{)\{}
+  
+  \CommentTok{\# if parameter "include\_zero\_lambda" equals to TRUE and no zero lambda in paramter "lambda". Append zero lambda.}
+  \ControlFlowTok{if}\NormalTok{ (include\_zero\_lambda }\SpecialCharTok{\&\&} \FunctionTok{sum}\NormalTok{(lambda }\SpecialCharTok{==} \DecValTok{0}\NormalTok{) }\SpecialCharTok{==} \DecValTok{0}\NormalTok{) \{}
+\NormalTok{    lambda }\OtherTok{=} \FunctionTok{c}\NormalTok{(lambda, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  \}}
+  
+  
+  
+  \CommentTok{\# this part is used to center the predictors and make each column unit which means the length of all column vectors equals to 1. }
+  
+  \CommentTok{\# also, due to the same sample space of training data and test data, the test data will be calculated by training data scale. So the scale will be returned at the end of this function.}
+\NormalTok{  colmean }\OtherTok{=} \FunctionTok{colMeans}\NormalTok{(x)}
+\NormalTok{  colscale }\OtherTok{=} \FunctionTok{c}\NormalTok{()}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(x)) \{ }\CommentTok{\# standarize each columns}
+\NormalTok{    x[, i] }\OtherTok{=}\NormalTok{ x[, i] }\SpecialCharTok{{-}}\NormalTok{ colmean[i] }\CommentTok{\# centered}
+\NormalTok{    colscale }\OtherTok{=} \FunctionTok{c}\NormalTok{(colscale, }\FunctionTok{sqrt}\NormalTok{(}\FunctionTok{sum}\NormalTok{(x[, i] }\SpecialCharTok{*}\NormalTok{ x[, i]))) }\CommentTok{\# save scale}
+\NormalTok{    x[, i] }\OtherTok{=}\NormalTok{ x[, i] }\SpecialCharTok{/} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{sum}\NormalTok{(x[, i] }\SpecialCharTok{*}\NormalTok{ x[, i])) }\CommentTok{\# make column unit}
+\NormalTok{  \}}
+  
+  \CommentTok{\# add intercept and initialize beta as all 0s}
+\NormalTok{  x }\OtherTok{=} \FunctionTok{cbind}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FunctionTok{nrow}\NormalTok{(x)), x)}
+\NormalTok{  beta }\OtherTok{=} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{ncol}\NormalTok{(x)))}
+  
+  
+  \CommentTok{\# in this part, we use path of lambda to calculate a list of beta with descending beta}
+\NormalTok{  beta\_list }\OtherTok{=} \FunctionTok{list}\NormalTok{()}
+  
+  \CommentTok{\# if "lambda" is a scale:}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(lambda) }\SpecialCharTok{==} \DecValTok{1}\NormalTok{) \{}
+\NormalTok{    beta }\OtherTok{=} \FunctionTok{Pathwise}\NormalTok{(x, y, lambda[}\DecValTok{1}\NormalTok{], beta, tol)}
+\NormalTok{    beta\_list[[}\FunctionTok{paste}\NormalTok{(}\StringTok{"beta {-}\textgreater{} lambda:"}\NormalTok{, lambda[}\DecValTok{1}\NormalTok{])]] }\OtherTok{=}\NormalTok{ beta}
+    
+    \CommentTok{\# return "lambda", "beta\_list", center factor "colmean", unitization factor "colscale"}
+    \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{lambda =}\NormalTok{ lambda, }\AttributeTok{beta =}\NormalTok{ beta\_list, }\AttributeTok{colmean =}\NormalTok{ colmean, }\AttributeTok{colscale =}\NormalTok{ colscale)) }
+\NormalTok{  \}}
+  
+  \CommentTok{\# if "lambda" is a vector:}
+  \ControlFlowTok{else}\NormalTok{\{}
+\NormalTok{    lambda }\OtherTok{=} \FunctionTok{sort}\NormalTok{(lambda, }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{) }\CommentTok{\# sort "lambda" by decreasing order}
+    \ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(lambda)) \{ }\CommentTok{\# for each lambda, calculate the beta}
+      \ControlFlowTok{if}\NormalTok{ (warm\_start)}
+\NormalTok{        beta }\OtherTok{=} \FunctionTok{Pathwise}\NormalTok{(x, y, lambda[k], beta, tol)}
+      \ControlFlowTok{else}\NormalTok{\{}
+\NormalTok{        beta }\OtherTok{=} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{ncol}\NormalTok{(x)))}
+\NormalTok{        beta }\OtherTok{=} \FunctionTok{Pathwise}\NormalTok{(x, y, lambda[k], beta, tol)}
+\NormalTok{      \}}
+\NormalTok{      beta\_list[[}\FunctionTok{paste}\NormalTok{(}\StringTok{"beta {-}\textgreater{} lambda:"}\NormalTok{, lambda[k])]] }\OtherTok{=}\NormalTok{ beta}
+\NormalTok{    \}}
+    
+    \CommentTok{\# return "lambda", "beta\_list", center factor "colmean", unitization factor "colscale"}
+    \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{lambda =}\NormalTok{ lambda, }\AttributeTok{beta =}\NormalTok{ beta\_list, }\AttributeTok{colmean =}\NormalTok{ colmean, }\AttributeTok{colscale =}\NormalTok{ colscale))}
+    
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{prediction}{%
+\section{prediction}\label{prediction}}
+
+this function is used to predict response variable given the model from
+function ``logit\_lasso'' and orginal predictors.
+
+input:
+
+\begin{itemize}
+\item
+  model: the result list from function ``logit\_lasso'' consist of
+  lambda list ``lambda'', beta list ``beta\_list'', center factor
+  ``colmean'', unitization factor ``colscale''. If beta list
+  ``beta\_list'' consist of different coefficients from different
+  lambda, then for each vector of coefficients, each vector of
+  predicting response variable will be returned, to form a list of
+  predicting response variable.
+\item
+  x: the original predictor variables.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{predict }\OtherTok{=} \ControlFlowTok{function}\NormalTok{(model, x)\{}
+  
+  \CommentTok{\# use the scale factors for training data to standarize predicting data}
+\NormalTok{  beta\_list }\OtherTok{=}\NormalTok{ model}\SpecialCharTok{$}\NormalTok{beta}
+\NormalTok{  colmean }\OtherTok{=}\NormalTok{ model}\SpecialCharTok{$}\NormalTok{colmean}
+\NormalTok{  colscale }\OtherTok{=}\NormalTok{ model}\SpecialCharTok{$}\NormalTok{colscale}
+\NormalTok{  predict\_y\_list }\OtherTok{=} \FunctionTok{list}\NormalTok{()}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(x)) \{}
+\NormalTok{    x[, i] }\OtherTok{=}\NormalTok{ x[, i] }\SpecialCharTok{{-}}\NormalTok{ colmean[i]}
+\NormalTok{    x[, i] }\OtherTok{=}\NormalTok{ x[, i] }\SpecialCharTok{/}\NormalTok{ colscale[i]}
+\NormalTok{  \}}
+  
+  \CommentTok{\# add intercept}
+\NormalTok{  x }\OtherTok{=} \FunctionTok{cbind}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FunctionTok{nrow}\NormalTok{(x)), x)}
+  
+  \CommentTok{\# calculate the predicting reponse variable for each beta (or lambda)}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{names}\NormalTok{(beta\_list)) \{}
+    \CommentTok{\# "i" is the value of lambda}
+\NormalTok{    predict\_y }\OtherTok{=} \DecValTok{1} \SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{x }\SpecialCharTok{\%*\%}\NormalTok{ beta\_list[[i]]))}
+\NormalTok{    predict\_y[predict\_y }\SpecialCharTok{\textless{}} \FloatTok{0.5}\NormalTok{] }\OtherTok{=} \DecValTok{0} 
+\NormalTok{    predict\_y[predict\_y }\SpecialCharTok{\textgreater{}=} \FloatTok{0.5}\NormalTok{] }\OtherTok{=} \DecValTok{1}
+\NormalTok{    predict\_y\_list[[i]] }\OtherTok{=}\NormalTok{ predict\_y}
+\NormalTok{  \}}
+  
+  \FunctionTok{return}\NormalTok{(predict\_y\_list)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{criterion-to-select-lambda}{%
+\section{criterion to select lambda}\label{criterion-to-select-lambda}}
+
+This function is used to calculate the performance given predict\_y and
+true\_y. If predict\_y\_list is a list of predict\_ys. Then for each
+predict\_y, a performance score will be given, to form a list of scores.
+
+input:
+
+\begin{itemize}
+\item
+  true\_y: dimension(1 * \#samples), true response variable.
+\item
+  predict\_y\_list: dimension(\#lambda * \#samples), a list of
+  predict\_ys , for each predict\_y, performance score will be
+  calculate.
+\item
+  score: a function to calculate the performance score for a model,
+  given predict\_y and true\_y
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rmse\_score }\OtherTok{=} \ControlFlowTok{function}\NormalTok{(true\_y, predict\_y)\{}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{sqrt}\NormalTok{(}\FunctionTok{sum}\NormalTok{((true\_y }\SpecialCharTok{{-}}\NormalTok{ predict\_y) }\SpecialCharTok{\^{}} \DecValTok{2}\NormalTok{) }\SpecialCharTok{/} \FunctionTok{length}\NormalTok{(true\_y)))}
+\NormalTok{\}}
+
+\NormalTok{criterion }\OtherTok{=} \ControlFlowTok{function}\NormalTok{(true\_y, predict\_y\_list, score)\{}
+\NormalTok{  result }\OtherTok{=} \FunctionTok{list}\NormalTok{()}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \FunctionTok{names}\NormalTok{(predict\_y\_list)) \{}
+\NormalTok{    predict\_y }\OtherTok{=}\NormalTok{ predict\_y\_list[[i]]}
+\NormalTok{    result[[i]] }\OtherTok{=} \FunctionTok{rmse\_score}\NormalTok{(true\_y, predict\_y)}
+\NormalTok{  \}}
+  \FunctionTok{return}\NormalTok{(result)}
+\NormalTok{\} }
+
+\DocumentationTok{\#\#\#\# a score function example {-}{-}{-} Accuracy:}
+
+\NormalTok{accuracy }\OtherTok{=} \ControlFlowTok{function}\NormalTok{(true\_y, predict\_y)\{}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{sum}\NormalTok{(true\_y }\SpecialCharTok{==}\NormalTok{ predict\_y) }\SpecialCharTok{/} \FunctionTok{length}\NormalTok{(true\_y))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{cross-validation}{%
+\section{cross validation}\label{cross-validation}}
+
+This function is used to calculate different performance for different
+lambda by cross validationl. At each fold, this function will call
+functions ``logit\_lasso'', ``predict'' and ``criterion'' to calculate
+the cv performance for each lambda.
+
+We first split the data to form training data and test data. At each
+fold, we calculate the predicting performance for each lambda. Also
+since the model is calculated by pair-wise coordinate descending, the
+warm start can be exploited at each fold. After the calculation of the
+final fold, the performances at all folds will be averaged for each
+lambda.
+
+Input:
+
+\begin{itemize}
+\item
+  x: orginal predictors. It will be split into training data and test
+  data at each fold.
+\item
+  y: response variables. It will be split into training data and test
+  data at each fold.
+\item
+  lambda: lambda list
+\item
+  model: a function to train model given x, y and lambda. In this file,
+  ``logit\_lasso'' will be put as this parameter.
+\item
+  predict: a function to predict response variable given predictors. In
+  this file, funtion ``predict'' will be put as this parameter.
+\item
+  criterion: a function to calculate the performance given predict\_y
+  and true\_y. In this file, funtion ``criterion'' will be put as this
+  parameter.
+\item
+  score: the score function put in criterion function. Function
+  ``accuracy'' is provided, other score function can be written by code
+  runner.
+\item
+  n\_fold: number of fold to cross validate.
+\item
+  tol: threshold used in function ``logit\_lasso''
+\item
+  warm\_start: parameter used in function ``logit\_lasso''. If
+  warm\_start = TRUE, at each fold, the coefficients of lambdas will be
+  calculated sequently.
+\end{itemize}
+
+\hypertarget{loading-the-data-and-run-main-code}{%
+\section{Loading the data and run main
+code}\label{loading-the-data-and-run-main-code}}
+
+\hypertarget{cv-to-compare-lasso-with-newton-raphson-logistic-regression}{%
+\subsection{CV to compare LASSO with Newton Raphson Logistic
+Regression}\label{cv-to-compare-lasso-with-newton-raphson-logistic-regression}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cv2 }\OtherTok{=} \ControlFlowTok{function}\NormalTok{(data, }\AttributeTok{k =} \DecValTok{10}\NormalTok{) \{}
+  \CommentTok{\# Create folds for N{-}fold cv}
+\NormalTok{  flds }\OtherTok{=} \FunctionTok{createFolds}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{diagnosis, }\AttributeTok{k =}\NormalTok{ k, }\AttributeTok{list =}\NormalTok{ T)}
+  
+  \CommentTok{\# Initialize fit statistics}
+\NormalTok{  rmse }\OtherTok{=} \FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{, k }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}
+\NormalTok{  accuracy }\OtherTok{=} \FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{, k }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}
+\NormalTok{  auc }\OtherTok{=} \FunctionTok{rep}\NormalTok{(}\ConstantTok{NA}\NormalTok{, k }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}
+  
+  \CommentTok{\# Loop through each fold}
+  \ControlFlowTok{for}\NormalTok{ (fold }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{(}\FunctionTok{length}\NormalTok{(flds) }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)) \{}
+    \CommentTok{\# Split training and test}
+\NormalTok{    test }\OtherTok{=}\NormalTok{ data[flds[[fold]],]}
+\NormalTok{    train }\OtherTok{=}\NormalTok{ data[}\SpecialCharTok{{-}}\NormalTok{flds[[fold]],]}
+    
+    \CommentTok{\# Prepare data for logistic lasso}
+\NormalTok{    x\_train }\OtherTok{=}\NormalTok{ train }\SpecialCharTok{|\textgreater{}} \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{id, }\SpecialCharTok{{-}}\NormalTok{diagnosis) }\SpecialCharTok{|\textgreater{}} \FunctionTok{as.matrix}\NormalTok{()}
+\NormalTok{    y\_train }\OtherTok{\textless{}{-}}\FunctionTok{matrix}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FunctionTok{nrow}\NormalTok{(train)))}
+\NormalTok{    y\_train[train}\SpecialCharTok{$}\NormalTok{diagnosis}\SpecialCharTok{==}\StringTok{"M"}\NormalTok{] }\OtherTok{=} \DecValTok{1}
+    
+\NormalTok{    x\_test }\OtherTok{=}\NormalTok{ test }\SpecialCharTok{|\textgreater{}} \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{id, }\SpecialCharTok{{-}}\NormalTok{diagnosis) }\SpecialCharTok{|\textgreater{}} \FunctionTok{as.matrix}\NormalTok{()}
+\NormalTok{    y\_test }\OtherTok{\textless{}{-}}\FunctionTok{matrix}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FunctionTok{nrow}\NormalTok{(test)))}
+\NormalTok{    y\_test[test}\SpecialCharTok{$}\NormalTok{diagnosis}\SpecialCharTok{==}\StringTok{"M"}\NormalTok{] }\OtherTok{=} \DecValTok{1}
+    
+   
+    \CommentTok{\# lambda = exp(seq({-}5, 10, 0.5))}
+    \CommentTok{\# Train model}
+\NormalTok{    train\_model }\OtherTok{=} \FunctionTok{logit\_lasso}\NormalTok{(x\_train, y\_train, }
+                              \AttributeTok{lambda =} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{5}\NormalTok{), }\AttributeTok{tol =} \FloatTok{0.01}\NormalTok{, }\AttributeTok{warm\_start =} \ConstantTok{TRUE}\NormalTok{,}
+                              \AttributeTok{include\_zero\_lambda =} \ConstantTok{FALSE}\NormalTok{)}
+    \FunctionTok{print}\NormalTok{(train\_model}\SpecialCharTok{$}\NormalTok{beta)}
+\NormalTok{    predict\_result }\OtherTok{=} \FunctionTok{predict}\NormalTok{(train\_model, x\_test)}
+    
+    \CommentTok{\# Calculate RMSE }
+\NormalTok{    error }\OtherTok{=} \FunctionTok{c}\NormalTok{(predict\_result[[}\DecValTok{1}\NormalTok{]]) }\SpecialCharTok{{-}}\NormalTok{ y\_test}
+\NormalTok{    rmse[fold] }\OtherTok{=} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{mean}\NormalTok{(error}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+    
+    \CommentTok{\# Calculate Accuracy }
+\NormalTok{    tp }\OtherTok{=} \FunctionTok{sum}\NormalTok{(}\FunctionTok{ifelse}\NormalTok{(}\FunctionTok{c}\NormalTok{(predict\_result[[}\DecValTok{1}\NormalTok{]]) }\SpecialCharTok{==} \DecValTok{1} \SpecialCharTok{\&}\NormalTok{ y\_test }\SpecialCharTok{==} \DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{))}
+\NormalTok{    tn }\OtherTok{=} \FunctionTok{sum}\NormalTok{(}\FunctionTok{ifelse}\NormalTok{(}\FunctionTok{c}\NormalTok{(predict\_result[[}\DecValTok{1}\NormalTok{]]) }\SpecialCharTok{==} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ y\_test }\SpecialCharTok{==} \DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{))}
+\NormalTok{    fp }\OtherTok{=} \FunctionTok{sum}\NormalTok{(}\FunctionTok{ifelse}\NormalTok{(}\FunctionTok{c}\NormalTok{(predict\_result[[}\DecValTok{1}\NormalTok{]]) }\SpecialCharTok{==} \DecValTok{1} \SpecialCharTok{\&}\NormalTok{ y\_test }\SpecialCharTok{==} \DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{))}
+\NormalTok{    fn }\OtherTok{=} \FunctionTok{sum}\NormalTok{(}\FunctionTok{ifelse}\NormalTok{(}\FunctionTok{c}\NormalTok{(predict\_result[[}\DecValTok{1}\NormalTok{]]) }\SpecialCharTok{==} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ y\_test }\SpecialCharTok{==} \DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{))}
+\NormalTok{    accuracy[fold] }\OtherTok{=}\NormalTok{ (tp }\SpecialCharTok{+}\NormalTok{ tn) }\SpecialCharTok{/} \FunctionTok{length}\NormalTok{(y\_test)}
+    
+    \CommentTok{\# Calculate AUC}
+\NormalTok{    pred }\OtherTok{=}\NormalTok{ROCR}\SpecialCharTok{::}\FunctionTok{prediction}\NormalTok{(}\FunctionTok{c}\NormalTok{(predict\_result[[}\DecValTok{1}\NormalTok{]]), y\_test)}
+\NormalTok{    auc\_perf }\OtherTok{=}\NormalTok{ ROCR}\SpecialCharTok{::}\FunctionTok{performance}\NormalTok{(pred, }\AttributeTok{measure =} \StringTok{"auc"}\NormalTok{)}
+\NormalTok{    auc[fold] }\OtherTok{=}\NormalTok{ auc\_perf}\SpecialCharTok{@}\NormalTok{y.values[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{  \}}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\StringTok{"RMSE"} \OtherTok{=}\NormalTok{ rmse, }\StringTok{"Accuracy"} \OtherTok{=}\NormalTok{ accuracy, }\StringTok{"AUC"} \OtherTok{=}\NormalTok{ auc))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# read data}
+\NormalTok{cancer }\OtherTok{=} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"breast{-}cancer.csv"}\NormalTok{)}
+
+\CommentTok{\# make the predictors, and the intercept will be added in function "newton\_optimize" instead of here.}
+\NormalTok{x }\OtherTok{=}\NormalTok{ cancer }\SpecialCharTok{|\textgreater{}} \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{id, }\SpecialCharTok{{-}}\NormalTok{diagnosis) }\SpecialCharTok{|\textgreater{}} \FunctionTok{as.matrix}\NormalTok{()}
+
+\CommentTok{\# make the response variables}
+\NormalTok{y }\OtherTok{\textless{}{-}}\FunctionTok{matrix}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,}\FunctionTok{nrow}\NormalTok{(cancer)))}
+\NormalTok{y[cancer}\SpecialCharTok{$}\NormalTok{diagnosis}\SpecialCharTok{==}\StringTok{"M"}\NormalTok{] }\OtherTok{=} \DecValTok{1}
+
+\CommentTok{\# calculate beta\_hat by newton method }
+\NormalTok{beta }\OtherTok{=} \FunctionTok{Pathwise}\NormalTok{(x, y, }\AttributeTok{tol =} \FloatTok{0.01}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "step =  1  lambda =  0  loss:  66.6605819922308"
+## [1] "step =  2  lambda =  0  loss:  49.963465719086"
+## [1] "step =  3  lambda =  0  loss:  40.4529054997777"
+## [1] "step =  4  lambda =  0  loss:  34.6750477019388"
+## [1] "step =  5  lambda =  0  loss:  30.9042661190382"
+## [1] "step =  6  lambda =  0  loss:  28.2811593619333"
+## [1] "step =  7  lambda =  0  loss:  26.3553820032935"
+## [1] "step =  8  lambda =  0  loss:  24.8776470051632"
+## [1] "step =  9  lambda =  0  loss:  23.7026351158803"
+## [1] "step =  10  lambda =  0  loss:  22.74138193345"
+## [1] "step =  11  lambda =  0  loss:  21.9368184048754"
+## [1] "step =  12  lambda =  0  loss:  21.250705492133"
+## [1] "step =  13  lambda =  0  loss:  20.6564315273568"
+## [1] "step =  14  lambda =  0  loss:  20.1349235765244"
+## [1] "step =  15  lambda =  0  loss:  19.6722351085352"
+## [1] "step =  16  lambda =  0  loss:  19.2580351328275"
+## [1] "step =  17  lambda =  0  loss:  18.8845863122221"
+## [1] "step =  18  lambda =  0  loss:  18.5460061149809"
+## [1] "step =  19  lambda =  0  loss:  18.2377176454796"
+## [1] "step =  20  lambda =  0  loss:  17.95604855713"
+## [1] "step =  21  lambda =  0  loss:  17.6979525517537"
+## [1] "step =  22  lambda =  0  loss:  17.4608286504725"
+## [1] "step =  23  lambda =  0  loss:  17.2424117771999"
+## [1] "step =  24  lambda =  0  loss:  17.0407096797611"
+## [1] "step =  25  lambda =  0  loss:  16.8539660132656"
+## [1] "step =  26  lambda =  0  loss:  16.6806356276384"
+## [1] "step =  27  lambda =  0  loss:  16.5193639098526"
+## [1] "step =  28  lambda =  0  loss:  16.3689664523781"
+## [1] "step =  29  lambda =  0  loss:  16.2284081460516"
+## [1] "step =  30  lambda =  0  loss:  16.0967822611162"
+## [1] "step =  31  lambda =  0  loss:  15.9732905757469"
+## [1] "step =  32  lambda =  0  loss:  15.8572255244676"
+## [1] "step =  33  lambda =  0  loss:  15.7479549816009"
+## [1] "step =  34  lambda =  0  loss:  15.644909882721"
+## [1] "step =  35  lambda =  0  loss:  15.5475745437093"
+## [1] "step =  36  lambda =  0  loss:  15.4554793129642"
+## [1] "step =  37  lambda =  0  loss:  15.3681950887532"
+## [1] "step =  38  lambda =  0  loss:  15.285329225374"
+## [1] "step =  39  lambda =  0  loss:  15.2065224048314"
+## [1] "step =  40  lambda =  0  loss:  15.1314461338307"
+## [1] "step =  41  lambda =  0  loss:  15.0598006155466"
+## [1] "step =  42  lambda =  0  loss:  14.9913128271643"
+## [1] "step =  43  lambda =  0  loss:  14.9257347004569"
+## [1] "step =  44  lambda =  0  loss:  14.8628413518169"
+## [1] "step =  45  lambda =  0  loss:  14.8024293415448"
+## [1] "step =  46  lambda =  0  loss:  14.7443149626914"
+## [1] "step =  47  lambda =  0  loss:  14.6883325705888"
+## [1] "step =  48  lambda =  0  loss:  14.6343329683962"
+## [1] "step =  49  lambda =  0  loss:  14.582181863985"
+## [1] "step =  50  lambda =  0  loss:  14.5317584111404"
+## [1] "step =  51  lambda =  0  loss:  14.4829538446436"
+## [1] "step =  52  lambda =  0  loss:  14.4356702151613"
+## [1] "step =  53  lambda =  0  loss:  14.3898192264864"
+## [1] "step =  54  lambda =  0  loss:  14.3453211747925"
+## [1] "step =  55  lambda =  0  loss:  14.3021039872807"
+## [1] "step =  56  lambda =  0  loss:  14.2601023558997"
+## [1] "step =  57  lambda =  0  loss:  14.219256960647"
+## [1] "step =  58  lambda =  0  loss:  14.1795137762374"
+## [1] "step =  59  lambda =  0  loss:  14.140823455557"
+## [1] "step =  60  lambda =  0  loss:  14.1031407832336"
+## [1] "step =  61  lambda =  0  loss:  14.0664241927681"
+## [1] "step =  62  lambda =  0  loss:  14.0306353409293"
+## [1] "step =  63  lambda =  0  loss:  13.9957387334669"
+## [1] "step =  64  lambda =  0  loss:  13.9617013966084"
+## [1] "step =  65  lambda =  0  loss:  13.9284925892405"
+## [1] "step =  66  lambda =  0  loss:  13.896083551121"
+## [1] "step =  67  lambda =  0  loss:  13.8644472829046"
+## [1] "step =  68  lambda =  0  loss:  13.8335583541835"
+## [1] "step =  69  lambda =  0  loss:  13.8033927361392"
+## [1] "step =  70  lambda =  0  loss:  13.7739276557681"
+## [1] "step =  71  lambda =  0  loss:  13.7451414689812"
+## [1] "step =  72  lambda =  0  loss:  13.7170135501859"
+## [1] "step =  73  lambda =  0  loss:  13.6895241962363"
+## [1] "step =  74  lambda =  0  loss:  13.6626545428887"
+## [1] "step =  75  lambda =  0  loss:  13.6363864921235"
+## [1] "step =  76  lambda =  0  loss:  13.6107026488969"
+## [1] "step =  77  lambda =  0  loss:  13.5855862660616"
+## [1] "step =  78  lambda =  0  loss:  13.5610211963554"
+## [1] "step =  79  lambda =  0  loss:  13.5369918504967"
+## [1] "step =  80  lambda =  0  loss:  13.5134831605479"
+## [1] "step =  81  lambda =  0  loss:  13.4904805478189"
+## [1] "step =  82  lambda =  0  loss:  13.4679698946756"
+## [1] "step =  83  lambda =  0  loss:  13.4459375197038"
+## [1] "step =  84  lambda =  0  loss:  13.4243701557543"
+## [1] "step =  85  lambda =  0  loss:  13.4032549304549"
+## [1] "step =  86  lambda =  0  loss:  13.3825793488356"
+## [1] "step =  87  lambda =  0  loss:  13.3623312777603"
+## [1] "step =  88  lambda =  0  loss:  13.3424989319005"
+## [1] "step =  89  lambda =  0  loss:  13.3230708610264"
+## [1] "step =  90  lambda =  0  loss:  13.3040359384193"
+## [1] "step =  91  lambda =  0  loss:  13.2853833502415"
+## [1] "step =  92  lambda =  0  loss:  13.2671025857202"
+## [1] "step =  93  lambda =  0  loss:  13.2491834280257"
+## [1] "step =  94  lambda =  0  loss:  13.2316159457419"
+## [1] "step =  95  lambda =  0  loss:  13.2143904848411"
+## [1] "step =  96  lambda =  0  loss:  13.197497661091"
+## [1] "step =  97  lambda =  0  loss:  13.1809283528309"
+## [1] "step =  98  lambda =  0  loss:  13.1646736940671"
+## [1] "step =  99  lambda =  0  loss:  13.1487250678417"
+## [1] "step =  100  lambda =  0  loss:  13.1330740998414"
+## [1] "step =  101  lambda =  0  loss:  13.1177126522142"
+## [1] "step =  102  lambda =  0  loss:  13.1026328175703"
+## [1] "step =  103  lambda =  0  loss:  13.0878269131469"
+## [1] "step =  104  lambda =  0  loss:  13.0732874751202"
+## [1] "step =  105  lambda =  0  loss:  13.0590072530507"
+## [1] "step =  106  lambda =  0  loss:  13.0449792044525"
+## [1] "step =  107  lambda =  0  loss:  13.0311964894759"
+## [1] "step =  108  lambda =  0  loss:  13.017652465698"
+## [1] "step =  109  lambda =  0  loss:  13.0043406830156"
+## [1] "step =  110  lambda =  0  loss:  12.991254878636"
+## [1] "step =  111  lambda =  0  loss:  12.9783889721629"
+## [1] "step =  112  lambda =  0  loss:  12.9657370607748"
+## [1] "step =  113  lambda =  0  loss:  12.9532934144946"
+## [1] "step =  114  lambda =  0  loss:  12.9410524715485"
+## [1] "step =  115  lambda =  0  loss:  12.9290088338136"
+## [1] "step =  116  lambda =  0  loss:  12.9171572623546"
+## [1] "step =  117  lambda =  0  loss:  12.9054926730472"
+## [1] "step =  118  lambda =  0  loss:  12.8940101322896"
+## [1] "step =  119  lambda =  0  loss:  12.8827048528018"
+## [1] "step =  120  lambda =  0  loss:  12.8715721895109"
+## [1] "step =  121  lambda =  0  loss:  12.8606076355252"
+## [1] "step =  122  lambda =  0  loss:  12.8498068181935"
+## [1] "step =  123  lambda =  0  loss:  12.8391654952525"
+## [1] "step =  124  lambda =  0  loss:  12.8286795510599"
+## [1] "step =  125  lambda =  0  loss:  12.8183449929134"
+## [1] "step =  126  lambda =  0  loss:  12.8081579474567"
+## [1] "step =  127  lambda =  0  loss:  12.7981146571691"
+## [1] "step =  128  lambda =  0  loss:  12.7882114769406"
+## [1] "normal end"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# check the data in glm}
+\NormalTok{model }\OtherTok{=} \FunctionTok{glmnet}\NormalTok{( x ,y, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{)}
+\NormalTok{model}\SpecialCharTok{$}\NormalTok{coefficients}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## NULL
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{314}\NormalTok{)}
+\NormalTok{fit\_stats }\OtherTok{=} \FunctionTok{cv2}\NormalTok{(cancer, }\AttributeTok{k =} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "step =  1  lambda =  0.00673794699908547  loss:  13.7644539295473"
+## [1] "step =  2  lambda =  0.00673794699908547  loss:  11.0725494358288"
+## [1] "step =  3  lambda =  0.00673794699908547  loss:  10.441374269653"
+## [1] "step =  4  lambda =  0.00673794699908547  loss:  10.2608488058539"
+## [1] "step =  5  lambda =  0.00673794699908547  loss:  10.1862863883601"
+## [1] "step =  6  lambda =  0.00673794699908547  loss:  10.1520928663004"
+## [1] "step =  7  lambda =  0.00673794699908547  loss:  10.1383222331703"
+## [1] "step =  8  lambda =  0.00673794699908547  loss:  10.1434955606805"
+## [1] "Initial log likelihood loss is smaller, stop the iteration."
+## $`beta -> lambda: 0.00673794699908547`
+##              [,1]
+##  [1,]  -0.6665663
+##  [2,]  26.4106575
+##  [3,]  42.3425740
+##  [4,]  29.1745575
+##  [5,]  35.6460848
+##  [6,]  35.1053432
+##  [7,]  -3.3288429
+##  [8,]  39.1190003
+##  [9,]  30.4057620
+## [10,]  12.4251627
+## [11,] -18.4605079
+## 
+## [1] "step =  1  lambda =  0.00673794699908547  loss:  13.1825460912539"
+## [1] "step =  2  lambda =  0.00673794699908547  loss:  11.0813690083406"
+## [1] "step =  3  lambda =  0.00673794699908547  loss:  10.485244927377"
+## [1] "step =  4  lambda =  0.00673794699908547  loss:  10.3097124881127"
+## [1] "step =  5  lambda =  0.00673794699908547  loss:  10.2365767043146"
+## [1] "step =  6  lambda =  0.00673794699908547  loss:  10.206596361631"
+## [1] "step =  7  lambda =  0.00673794699908547  loss:  10.1990191341647"
+## [1] "normal end"
+## $`beta -> lambda: 0.00673794699908547`
+##              [,1]
+##  [1,]  -0.5940318
+##  [2,]  15.5915250
+##  [3,]  34.2856604
+##  [4,]  24.5923453
+##  [5,]  38.4597139
+##  [6,]  27.9002631
+##  [7,] -13.1865826
+##  [8,]  45.1142030
+##  [9,]  30.3589979
+## [10,]  10.6456776
+## [11,] -14.7462637
+## 
+## [1] "step =  1  lambda =  0.00673794699908547  loss:  13.6848334711208"
+## [1] "step =  2  lambda =  0.00673794699908547  loss:  11.1654592814424"
+## [1] "step =  3  lambda =  0.00673794699908547  loss:  10.5898893977493"
+## [1] "step =  4  lambda =  0.00673794699908547  loss:  10.4284231805239"
+## [1] "step =  5  lambda =  0.00673794699908547  loss:  10.3657891208363"
+## [1] "step =  6  lambda =  0.00673794699908547  loss:  10.3354475980587"
+## [1] "step =  7  lambda =  0.00673794699908547  loss:  10.3290523577129"
+## [1] "normal end"
+## $`beta -> lambda: 0.00673794699908547`
+##              [,1]
+##  [1,]  -0.6353267
+##  [2,]  17.4326805
+##  [3,]  37.9474064
+##  [4,]  28.9997758
+##  [5,]  34.8047321
+##  [6,]  30.3362188
+##  [7,]  -5.3113564
+##  [8,]  38.5706837
+##  [9,]  30.6475898
+## [10,]  10.5684272
+## [11,] -18.3635958
+## 
+## [1] "step =  1  lambda =  0.00673794699908547  loss:  13.0740021065765"
+## [1] "step =  2  lambda =  0.00673794699908547  loss:  10.500842929342"
+## [1] "step =  3  lambda =  0.00673794699908547  loss:  9.89136110672812"
+## [1] "step =  4  lambda =  0.00673794699908547  loss:  9.69701024229263"
+## [1] "step =  5  lambda =  0.00673794699908547  loss:  9.60791339760281"
+## [1] "step =  6  lambda =  0.00673794699908547  loss:  9.5625704390538"
+## [1] "step =  7  lambda =  0.00673794699908547  loss:  9.54418774430122"
+## [1] "step =  8  lambda =  0.00673794699908547  loss:  9.54269237076211"
+## [1] "normal end"
+## $`beta -> lambda: 0.00673794699908547`
+##              [,1]
+##  [1,]  -0.6738196
+##  [2,]  20.6374980
+##  [3,]  36.4848713
+##  [4,]  26.9590235
+##  [5,]  39.2146068
+##  [6,]  37.2258813
+##  [7,] -12.4840995
+##  [8,]  40.8174141
+##  [9,]  28.5973952
+## [10,]   5.2138136
+## [11,] -14.9161551
+## 
+## [1] "step =  1  lambda =  0.00673794699908547  loss:  13.9523769638075"
+## [1] "step =  2  lambda =  0.00673794699908547  loss:  11.2438296535626"
+## [1] "step =  3  lambda =  0.00673794699908547  loss:  10.7137956594557"
+## [1] "step =  4  lambda =  0.00673794699908547  loss:  10.5782448463664"
+## [1] "step =  5  lambda =  0.00673794699908547  loss:  10.5148719158998"
+## [1] "step =  6  lambda =  0.00673794699908547  loss:  10.4832227964549"
+## [1] "step =  7  lambda =  0.00673794699908547  loss:  10.472088681153"
+## [1] "step =  8  lambda =  0.00673794699908547  loss:  10.4754818433314"
+## [1] "Initial log likelihood loss is smaller, stop the iteration."
+## $`beta -> lambda: 0.00673794699908547`
+##             [,1]
+##  [1,]  -0.599611
+##  [2,]  15.035063
+##  [3,]  37.761317
+##  [4,]  27.158834
+##  [5,]  34.969472
+##  [6,]  29.419751
+##  [7,]  -9.623764
+##  [8,]  34.432484
+##  [9,]  39.199296
+## [10,]  10.381114
+## [11,] -17.595191
+## 
+## [1] "step =  1  lambda =  0.00673794699908547  loss:  13.1207066201965"
+## [1] "step =  2  lambda =  0.00673794699908547  loss:  10.5018037836112"
+## [1] "step =  3  lambda =  0.00673794699908547  loss:  9.92404608764919"
+## [1] "step =  4  lambda =  0.00673794699908547  loss:  9.77134879725165"
+## [1] "step =  5  lambda =  0.00673794699908547  loss:  9.70978799570827"
+## [1] "step =  6  lambda =  0.00673794699908547  loss:  9.67982284934891"
+## [1] "step =  7  lambda =  0.00673794699908547  loss:  9.67248503963586"
+## [1] "normal end"
+## $`beta -> lambda: 0.00673794699908547`
+##              [,1]
+##  [1,]  -0.7014842
+##  [2,]  26.7471724
+##  [3,]  40.2701022
+##  [4,]  26.7687629
+##  [5,]  36.0311011
+##  [6,]  33.2583899
+##  [7,]  -5.0169181
+##  [8,]  38.2123899
+##  [9,]  29.1929179
+## [10,]  13.3892088
+## [11,] -16.8652615
+## 
+## [1] "step =  1  lambda =  0.00673794699908547  loss:  12.2450130650439"
+## [1] "step =  2  lambda =  0.00673794699908547  loss:  9.89448291297841"
+## [1] "step =  3  lambda =  0.00673794699908547  loss:  9.34736301689958"
+## [1] "step =  4  lambda =  0.00673794699908547  loss:  9.19061474562052"
+## [1] "step =  5  lambda =  0.00673794699908547  loss:  9.1214352392312"
+## [1] "step =  6  lambda =  0.00673794699908547  loss:  9.0737440085382"
+## [1] "step =  7  lambda =  0.00673794699908547  loss:  9.04744202644352"
+## [1] "step =  8  lambda =  0.00673794699908547  loss:  9.03611109888118"
+## [1] "step =  9  lambda =  0.00673794699908547  loss:  9.03456655891827"
+## [1] "normal end"
+## $`beta -> lambda: 0.00673794699908547`
+##              [,1]
+##  [1,]  -0.5676915
+##  [2,]  24.8875091
+##  [3,]  36.9998476
+##  [4,]  26.5205947
+##  [5,]  40.8607204
+##  [6,]  35.5266202
+##  [7,]  -6.9449469
+##  [8,]  39.7070909
+##  [9,]  23.9227456
+## [10,]  12.7079666
+## [11,] -19.7056808
+## 
+## [1] "step =  1  lambda =  0.00673794699908547  loss:  12.5375499996558"
+## [1] "step =  2  lambda =  0.00673794699908547  loss:  10.359788017193"
+## [1] "step =  3  lambda =  0.00673794699908547  loss:  9.88467203849266"
+## [1] "step =  4  lambda =  0.00673794699908547  loss:  9.75015317435673"
+## [1] "step =  5  lambda =  0.00673794699908547  loss:  9.69262740526659"
+## [1] "step =  6  lambda =  0.00673794699908547  loss:  9.67241177298203"
+## [1] "step =  7  lambda =  0.00673794699908547  loss:  9.67583500423354"
+## [1] "Initial log likelihood loss is smaller, stop the iteration."
+## $`beta -> lambda: 0.00673794699908547`
+##              [,1]
+##  [1,]  -0.6476345
+##  [2,]  22.6658421
+##  [3,]  35.0318264
+##  [4,]  25.6799646
+##  [5,]  29.9866046
+##  [6,]  32.4182562
+##  [7,]   2.9861613
+##  [8,]  35.7192146
+##  [9,]  35.3288117
+## [10,]  10.3821882
+## [11,] -23.0673832
+## 
+## [1] "step =  1  lambda =  0.00673794699908547  loss:  12.4246251715734"
+## [1] "step =  2  lambda =  0.00673794699908547  loss:  10.4600305402933"
+## [1] "step =  3  lambda =  0.00673794699908547  loss:  9.98624669656893"
+## [1] "step =  4  lambda =  0.00673794699908547  loss:  9.86098278865605"
+## [1] "step =  5  lambda =  0.00673794699908547  loss:  9.84146891347455"
+## [1] "step =  6  lambda =  0.00673794699908547  loss:  9.85969652293898"
+## [1] "Initial log likelihood loss is smaller, stop the iteration."
+## $`beta -> lambda: 0.00673794699908547`
+##              [,1]
+##  [1,]  -0.5270247
+##  [2,]  25.4974359
+##  [3,]  34.6607220
+##  [4,]  29.5062867
+##  [5,]  30.2534762
+##  [6,]  25.7047910
+##  [7,]   5.7912013
+##  [8,]  43.9836737
+##  [9,]  26.0607658
+## [10,]   5.2558125
+## [11,] -18.1999283
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rmse }\OtherTok{=} \FunctionTok{mean}\NormalTok{(fit\_stats}\SpecialCharTok{$}\NormalTok{RMSE)}
+\NormalTok{rmse}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.253325
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{acc }\OtherTok{=} \FunctionTok{mean}\NormalTok{(fit\_stats}\SpecialCharTok{$}\NormalTok{Accuracy)}
+\NormalTok{acc}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9334075
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{auc }\OtherTok{=} \FunctionTok{mean}\NormalTok{(fit\_stats}\SpecialCharTok{$}\NormalTok{AUC)}
+\NormalTok{auc}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.9256373
+\end{verbatim}
+
+\end{document}

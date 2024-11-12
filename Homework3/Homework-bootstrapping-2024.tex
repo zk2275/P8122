@@ -1,0 +1,944 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Homework on re-sampling methods},
+  pdfauthor={Zhuodiao Kuang(zk2275)},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Homework on re-sampling methods}
+\author{Zhuodiao Kuang(zk2275)}
+\date{P8160 Advanced Statistical Computing}
+
+\begin{document}
+\maketitle
+
+\textbf{In this homework, we require the use of parallel computing codes
+for your implementations.}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(parallel)}
+\FunctionTok{library}\NormalTok{(foreach)}
+\FunctionTok{library}\NormalTok{(doParallel)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{problem-1-a-randomized-trial-on-an-eye-treatment}{%
+\subsection{Problem 1: a randomized trial on an eye
+treatment}\label{problem-1-a-randomized-trial-on-an-eye-treatment}}
+
+An ophthalmologist has designed a randomized clinical trial to assess
+the effectiveness of a new laser treatment (blue) against the
+traditional one (red). The response to be evaluated is visual acuity,
+which is measured by counting the number of letters correctly identified
+in a standard eye test. Out of the 40 patients who are eligible for
+laser treatment, 20 have only one suitable eye for the treatment and
+received one treatment allocated at random. The remaining 20 patients
+have both eyes suitable for laser treatment and received both treatments
+randomly assigned to the two eyes. Therefore, the study includes both
+paired comparison and two-sample data. The data are presented in the
+following R script, where the first 20 rows represent patients who
+received treatments in both eyes., and the last 10 rows represent
+patients who received treatment in only one eye.
+
+\begin{verbatim}
+> blue <- c(4,69,87,35,39,79,31,79,65,95,68,
+           62,70,80,84,79,66,75,59,77,36,86,
+           39,85,74,72,69,85,85,72)
+> red <-c(62,80,82,83,0,81,28,69,48,90,63,
+        77,0,55,83,85,54,72,58,68,88,83,78,
+        30,58,45,78,64,87,65)
+> acui<-data.frame(str=c(rep(0,20),
+            rep(1,10)),red,blue)
+\end{verbatim}
+
+\vskip 20pt
+
+\textbf{Answer the following question:}
+
+\begin{enumerate}
+\item[(1)]  The treatment effect of the new laser treatment is defined as $$\Delta= E(Y\mid \mbox{trt = new/blue}) - E(Y\mid \mbox{trt = traditional/red}).$$  Please construct a statistics from  the collected data to estimate the treatment effect $\Delta$.
+\item[(2)] Propose a bootstrap algorithm to construct a 95\% confidence interval for the treatment effect. Describe your bootstrap procedure. Based on the resulting confidence interval, can the new treatment effectively improve visual acuity?
+\end{enumerate}
+
+\hypertarget{answer-1.1}{%
+\subsubsection{Answer 1.1}\label{answer-1.1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{blue }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{,}\DecValTok{69}\NormalTok{,}\DecValTok{87}\NormalTok{,}\DecValTok{35}\NormalTok{,}\DecValTok{39}\NormalTok{,}\DecValTok{79}\NormalTok{,}\DecValTok{31}\NormalTok{,}\DecValTok{79}\NormalTok{,}\DecValTok{65}\NormalTok{,}\DecValTok{95}\NormalTok{,}\DecValTok{68}\NormalTok{,}
+           \DecValTok{62}\NormalTok{,}\DecValTok{70}\NormalTok{,}\DecValTok{80}\NormalTok{,}\DecValTok{84}\NormalTok{,}\DecValTok{79}\NormalTok{,}\DecValTok{66}\NormalTok{,}\DecValTok{75}\NormalTok{,}\DecValTok{59}\NormalTok{,}\DecValTok{77}\NormalTok{,}\DecValTok{36}\NormalTok{,}\DecValTok{86}\NormalTok{,}
+           \DecValTok{39}\NormalTok{,}\DecValTok{85}\NormalTok{,}\DecValTok{74}\NormalTok{,}\DecValTok{72}\NormalTok{,}\DecValTok{69}\NormalTok{,}\DecValTok{85}\NormalTok{,}\DecValTok{85}\NormalTok{,}\DecValTok{72}\NormalTok{)}
+\NormalTok{red }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{62}\NormalTok{,}\DecValTok{80}\NormalTok{,}\DecValTok{82}\NormalTok{,}\DecValTok{83}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{81}\NormalTok{,}\DecValTok{28}\NormalTok{,}\DecValTok{69}\NormalTok{,}\DecValTok{48}\NormalTok{,}\DecValTok{90}\NormalTok{,}\DecValTok{63}\NormalTok{,}
+        \DecValTok{77}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{55}\NormalTok{,}\DecValTok{83}\NormalTok{,}\DecValTok{85}\NormalTok{,}\DecValTok{54}\NormalTok{,}\DecValTok{72}\NormalTok{,}\DecValTok{58}\NormalTok{,}\DecValTok{68}\NormalTok{,}\DecValTok{88}\NormalTok{,}\DecValTok{83}\NormalTok{,}\DecValTok{78}\NormalTok{,}
+        \DecValTok{30}\NormalTok{,}\DecValTok{58}\NormalTok{,}\DecValTok{45}\NormalTok{,}\DecValTok{78}\NormalTok{,}\DecValTok{64}\NormalTok{,}\DecValTok{87}\NormalTok{,}\DecValTok{65}\NormalTok{)}
+\NormalTok{acui }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{str =} \FunctionTok{c}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{20}\NormalTok{),}\FunctionTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{10}\NormalTok{)),red,blue)}
+\end{Highlighting}
+\end{Shaded}
+
+The treatment effect is defined as
+\(E(Y\mid \mbox{trt = new}) - E(Y\mid \mbox{trt = traditional})\). So we
+calculate the raw treatment effect based on the data. Let blue laser be
+the new treatment.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{raw\_trt\_eff }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(blue) }\SpecialCharTok{{-}} \FunctionTok{mean}\NormalTok{(red)}
+\end{Highlighting}
+\end{Shaded}
+
+The raw treatment effect (the observed value of mean difference) is
+3.067.
+
+\hypertarget{answer-1.2}{%
+\subsubsection{Answer 1.2}\label{answer-1.2}}
+
+Since there are paired structures in our data, when doing bootstrap,
+we're going to preserve this structure, so instead of bootstrap each
+observation, we bootstrap subjects for paired data. For un-paired data,
+we use the simple bootstrap. That is
+
+\begin{itemize}
+\item
+  For 20 pairs of paired data, in each bootstrap replicate, random
+  sample (with replacement) the number of subject
+\item
+  For 10 unpaired data in each group, sample with replacement in each
+  bootstrap sample
+\item
+  Combine the two part of bootstrap replicates as the final bootstrap
+  replicate
+\item
+  Repeat B times
+\end{itemize}
+
+And the implementation of this paired bootstrap is shown in the
+\texttt{PairedStrap()} function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{2024}\NormalTok{)}
+\CommentTok{\# return whole bootstrap sample for future use}
+\NormalTok{PairedStrap }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(paired, unpaired, }\AttributeTok{nboot =} \DecValTok{2000}\NormalTok{)\{}
+\NormalTok{    numCores }\OtherTok{\textless{}{-}} \FunctionTok{detectCores}\NormalTok{()}
+    \FunctionTok{registerDoParallel}\NormalTok{(numCores)}
+    
+    \CommentTok{\# parallel computing implementation using foreach}
+\NormalTok{        res }\OtherTok{\textless{}{-}} \FunctionTok{foreach}\NormalTok{(}\FunctionTok{icount}\NormalTok{(nboot), }\AttributeTok{.combine=}\NormalTok{rbind) }\SpecialCharTok{\%dopar\%}\NormalTok{ \{}
+           \CommentTok{\# bootstrap for paired data}
+\NormalTok{           subject }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(paired)}
+\NormalTok{           pairedstrap.ind }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(subject, subject, }\AttributeTok{replace =}\NormalTok{ T)}
+\NormalTok{           pairedsamp }\OtherTok{\textless{}{-}}\NormalTok{ paired[pairedstrap.ind,]}
+\NormalTok{           pairedstrap.trt }\OtherTok{\textless{}{-}}\NormalTok{ pairedsamp}\SpecialCharTok{$}\NormalTok{blue}
+\NormalTok{           pairedstrap.ctrl }\OtherTok{\textless{}{-}}\NormalTok{ pairedsamp}\SpecialCharTok{$}\NormalTok{red}
+           \CommentTok{\# bootstrap for unpaired data }
+\NormalTok{           unpaired.trt }\OtherTok{\textless{}{-}}\NormalTok{ unpaired}\SpecialCharTok{$}\NormalTok{blue}
+\NormalTok{           unpaired.ctrl }\OtherTok{\textless{}{-}}\NormalTok{ unpaired}\SpecialCharTok{$}\NormalTok{red}
+\NormalTok{           unpairedstrap.trt }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(unpaired.trt, }\AttributeTok{replace =}\NormalTok{ T)}
+\NormalTok{           unpairedstrap.ctrl }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(unpaired.ctrl, }\AttributeTok{replace =}\NormalTok{ T)}
+           \CommentTok{\# combine two parts of bootstrap}
+\NormalTok{           boot.trt }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(pairedstrap.trt, unpairedstrap.trt)}
+\NormalTok{           boot.ctrl }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(pairedstrap.ctrl, unpairedstrap.ctrl)}
+           \CommentTok{\# b{-}th bootstrap estimate of treatment effect}
+           \FunctionTok{mean}\NormalTok{(boot.trt) }\SpecialCharTok{{-}} \FunctionTok{mean}\NormalTok{(boot.ctrl)}
+\NormalTok{        \}}
+        \FunctionTok{stopImplicitCluster}\NormalTok{()}
+        
+        \FunctionTok{return}\NormalTok{(res)}
+\NormalTok{\}}
+
+
+\NormalTok{acui.paired }\OtherTok{\textless{}{-}}\NormalTok{ acui[}\FunctionTok{which}\NormalTok{(acui}\SpecialCharTok{$}\NormalTok{str }\SpecialCharTok{==} \DecValTok{0}\NormalTok{),]}
+\NormalTok{acui.unpaired }\OtherTok{\textless{}{-}}\NormalTok{ acui[}\FunctionTok{which}\NormalTok{(acui}\SpecialCharTok{$}\NormalTok{str }\SpecialCharTok{==} \DecValTok{1}\NormalTok{),]}
+\NormalTok{treatmenteffect.boot.res }\OtherTok{\textless{}{-}} \FunctionTok{PairedStrap}\NormalTok{(acui.paired, acui.unpaired, }\FloatTok{1e4}\NormalTok{)}
+\NormalTok{treatmenteffect.boot.se }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{var}\NormalTok{(treatmenteffect.boot.res))}
+
+
+\FunctionTok{hist}\NormalTok{(treatmenteffect.boot.res)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-bootstrapping-2024_files/figure-latex/paired_bootstrap-1.pdf}
+
+From 10000 bootstrap sample, we have a estimation of the treatment
+effect is 3.089 with a standard error 4.789. And from the histogram of
+the distribution of bootstrap estimates, we can see that it is
+approximately normal.
+
+The \(100(1-\alpha)\%\) confidence limits for the basic bootstrap
+confidence interval are (Statistical Computing with R, Page 226)
+
+\[(2\hat\theta-\hat\theta^*_{1-\alpha/2}, 2\hat\theta-\hat\theta^*_{\alpha/2})\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{2024}\NormalTok{)}
+\NormalTok{alpha }\OtherTok{=} \FloatTok{0.05}
+\NormalTok{boot\_ci }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(boot\_est, alpha, raw\_est)\{}
+    \CommentTok{\# use quantile function to get the upper and lower bound}
+\NormalTok{    qt }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(boot\_est, }\FunctionTok{c}\NormalTok{(alpha}\SpecialCharTok{/}\DecValTok{2}\NormalTok{, }\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{alpha}\SpecialCharTok{/}\DecValTok{2}\NormalTok{), }\AttributeTok{type =} \DecValTok{1}\NormalTok{)}
+    \FunctionTok{names}\NormalTok{(qt) }\OtherTok{\textless{}{-}} \FunctionTok{rev}\NormalTok{(}\FunctionTok{names}\NormalTok{(qt))}
+\NormalTok{    CI }\OtherTok{\textless{}{-}} \FunctionTok{rev}\NormalTok{(}\DecValTok{2} \SpecialCharTok{*}\NormalTok{ raw\_est }\SpecialCharTok{{-}}\NormalTok{ qt)}
+    \FunctionTok{return}\NormalTok{(CI)}
+\NormalTok{\}}
+
+\NormalTok{boot\_ci }\OtherTok{\textless{}{-}} \FunctionTok{boot\_ci}\NormalTok{(treatmenteffect.boot.res, }\FloatTok{0.05}\NormalTok{, raw\_trt\_eff)}
+\FunctionTok{t}\NormalTok{(boot\_ci) }\SpecialCharTok{|\textgreater{}}\NormalTok{  knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\AttributeTok{digits =} \DecValTok{3}\NormalTok{,}
+\AttributeTok{caption =} \StringTok{"95\% confidence interval of bootstrap estimate of treatment effect"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}rr@{}}
+\caption{95\% confidence interval of bootstrap estimate of treatment
+effect}\tabularnewline
+\toprule\noalign{}
+2.5\% & 97.5\% \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+2.5\% & 97.5\% \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+-6.5 & 12.467 \\
+\end{longtable}
+
+The 95\% confidence interval of the treatment effect \(\hat\theta\) is
+shown in the table 1. Since the confidence interval contains 0, so we
+conclude that at 95\% confident level, we cannot say that there is
+significant difference in treatment effect between the new treatment and
+the traditional one.
+
+\hypertarget{problem-2}{%
+\subsection{Problem 2}\label{problem-2}}
+
+The Galaxy data comprises the velocities (in km/sec) of 82 galaxies from
+six well-separated conic sections of an unfilled survey of the Corona
+Borealis region. The structure in the velocity distribution corresponds
+to the spatial distribution of galaxies in the far universe. A
+multimodal distribution of velocities, in particular, indicates a strong
+heterogeneity in the spatial distribution of the galaxies. This is seen
+as evidence for the existence of voids and superclusters in the far
+universe.
+
+Statistically, the question of multimodality can be formulated as a test
+problem
+
+\[H_0: n_{\mbox{mode}} = 1 \quad \mbox{vs} \quad H_a: n_{\mbox{mode}} \ge 1\]
+where \$n\_\{\mbox{mode}\} \$ is the number of modes of the density of
+the velocities.
+
+Considered nonparametric kernel density estimates
+\[ \widehat{f}_{K,h}(x) = \frac{1}{nh}\sum_{i=1}^n K(\frac{x - X_i}{h}) \]
+It can be shown that the number of modes in \(\widehat{f}_{K,h}(x)\)
+decreases as \(h\) increase. Let \(H_1\) be the minimal bandwidth for
+which \(\widehat{f}_{K,H_1}(x)\) is unimodal. In the galaxy data,
+\(h_1 = 3.05\)
+
+Since multimodal densities need more smoothing to become unimodal, the
+minimal bandwidth \(H_1\) can be used as a test statistic, and one
+reject the null hypothesis if \[\mbox{Prob} (H_1 > h_1) \le \alpha \]
+
+To evaluating the distribution of \(H_1\) under the null, one could use
+the following bootstrap algorithm
+
+\begin{enumerate}
+\item draw B bootstrap samples if size $n$ from  $\widehat{f}_{K,h_1}(x)$
+\item for each bootstrap, find $h_1^{*(b)}$, the smallest $h$ for which this bootstrap sample has just $1$ mode
+\item approximate p-value of test is $\frac{\#{h_1^{*(b)}>h_1}}{B}$
+\end{enumerate}
+
+Implement the algorithm above in R, apply it to the galaxy data, and
+report your findings. You may find the following R codes helpful.
+
+\begin{verbatim}
+library(MASS)
+data(galaxies)
+plot(density(galaxies/1000, bw=1.5))
+plot(density(galaxies/1000, bw=3.5))
+
+#calculate the number of modes in the density
+  den <- density(galaxies/1000, bw=1.5)
+  den.s <- smooth.spline(den$x, den$y, all.knots=TRUE, spar=0.8)
+  s.1 <- predict(den.s, den.s$x, deriv=1)
+  nmodes <- length(rle(den.sign <- sign(s.1$y))$values)/2
+\end{verbatim}
+
+\hypertarget{answer-2}{%
+\subsubsection{Answer 2}\label{answer-2}}
+
+Since in each bootstrap, we want to find \(h_1^{*(b)}\), the smallest
+\(h\) for which this bootstrap sample has just \(1\) mode. Under our
+null hypothesis, \(h_1 = 3.05\). So we apply the \texttt{n.modes()} to
+each bootstrap sample by setting a sequence of bandwidths. Here, we only
+focus on bandwidths close to \(h_1\) . Since if the null hypothesis is
+true, the bootstrap estimates \(h_1^{*(b)}\) should be centered around
+the \(h_1\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{boot.galaxy }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(data, nboot)\{}
+\NormalTok{n.modes }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(}\AttributeTok{data =}\NormalTok{ galaxies, bw)\{}
+\NormalTok{      den }\OtherTok{\textless{}{-}} \FunctionTok{density}\NormalTok{(data}\SpecialCharTok{/}\DecValTok{1000}\NormalTok{, }\AttributeTok{bw =}\NormalTok{ bw)}
+\NormalTok{      den.s }\OtherTok{\textless{}{-}} \FunctionTok{smooth.spline}\NormalTok{(den}\SpecialCharTok{$}\NormalTok{x, den}\SpecialCharTok{$}\NormalTok{y, }\AttributeTok{all.knots =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{      s}\FloatTok{.1} \OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(den.s, den.s}\SpecialCharTok{$}\NormalTok{x, }\AttributeTok{deriv =} \DecValTok{1}\NormalTok{)}
+\NormalTok{      nmodes }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(}\FunctionTok{rle}\NormalTok{(den.sign }\OtherTok{\textless{}{-}} \FunctionTok{sign}\NormalTok{(s}\FloatTok{.1}\SpecialCharTok{$}\NormalTok{y))}\SpecialCharTok{$}\NormalTok{values)}\SpecialCharTok{/}\DecValTok{2}
+ \FunctionTok{return}\NormalTok{(nmodes)}
+\NormalTok{\}}
+
+\NormalTok{get.h1 }\OtherTok{=} \ControlFlowTok{function}\NormalTok{(data, }\AttributeTok{upper =} \DecValTok{10}\NormalTok{, }\AttributeTok{tol =} \FloatTok{1e{-}5}\NormalTok{)\{}
+\NormalTok{        l }\OtherTok{=} \FloatTok{1e{-}9}
+\NormalTok{        r }\OtherTok{=}\NormalTok{ upper}
+        \ControlFlowTok{while}\NormalTok{ (r }\SpecialCharTok{{-}}\NormalTok{ l }\SpecialCharTok{\textgreater{}}\NormalTok{ tol) \{}
+\NormalTok{            bw }\OtherTok{=}\NormalTok{ (l }\SpecialCharTok{+}\NormalTok{ r) }\SpecialCharTok{/} \DecValTok{2}
+\NormalTok{            n }\OtherTok{=} \FunctionTok{n.modes}\NormalTok{(data, bw)}
+            \ControlFlowTok{if}\NormalTok{ (n }\SpecialCharTok{==} \DecValTok{1}\NormalTok{) \{}
+\NormalTok{                r }\OtherTok{=}\NormalTok{ bw}
+\NormalTok{            \} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{                l }\OtherTok{=}\NormalTok{ bw}
+\NormalTok{            \}}
+\NormalTok{        \}}
+    \FunctionTok{return}\NormalTok{(}\FunctionTok{ceiling}\NormalTok{(}\DecValTok{100} \SpecialCharTok{*}\NormalTok{ l) }\SpecialCharTok{/} \DecValTok{100}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{    galaxy.dens }\OtherTok{\textless{}{-}} \FunctionTok{density}\NormalTok{(data}\SpecialCharTok{/}\DecValTok{1000}\NormalTok{, }\AttributeTok{bw =} \FloatTok{3.05}\NormalTok{)}
+    
+    \CommentTok{\# parallel computing}
+\NormalTok{    h1.res }\OtherTok{\textless{}{-}} \FunctionTok{foreach}\NormalTok{(}\FunctionTok{icount}\NormalTok{(nboot), }\AttributeTok{.combine =}\NormalTok{ cbind) }\SpecialCharTok{\%dopar\%}\NormalTok{ \{}
+\NormalTok{        boot }\OtherTok{\textless{}{-}} \DecValTok{1000} \SpecialCharTok{*} \FunctionTok{sample}\NormalTok{(galaxy.dens}\SpecialCharTok{$}\NormalTok{x, }
+                              \AttributeTok{size =} \DecValTok{82}\NormalTok{, }
+                              \AttributeTok{replace =}\NormalTok{ T, }
+                              \AttributeTok{prob =}\NormalTok{ galaxy.dens}\SpecialCharTok{$}\NormalTok{y)}
+        \FunctionTok{get.h1}\NormalTok{(boot)}
+\NormalTok{    \}}
+    \FunctionTok{return}\NormalTok{(h1.res)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cl }\OtherTok{\textless{}{-}} \FunctionTok{makeCluster}\NormalTok{(}\DecValTok{12}\NormalTok{ , }\AttributeTok{outfile =} \StringTok{""}\NormalTok{)}
+\FunctionTok{registerDoParallel}\NormalTok{(cl)}
+\NormalTok{res.galaxies }\OtherTok{\textless{}{-}} \FunctionTok{boot.galaxy}\NormalTok{(galaxies,}\DecValTok{1000}\NormalTok{)}
+\FunctionTok{stopCluster}\NormalTok{(cl)}
+\CommentTok{\# calculate the p value of the }
+\NormalTok{p\_val\_galaxy }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(res.galaxies }\SpecialCharTok{\textgreater{}} \FloatTok{3.05}\NormalTok{)}\SpecialCharTok{/}\DecValTok{1000}
+\NormalTok{galaxy\_res\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{h1 =} \FunctionTok{t}\NormalTok{(res.galaxies))}
+
+
+\FunctionTok{ggplot}\NormalTok{(galaxy\_res\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ h1)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_histogram}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ ..density..), }\AttributeTok{binwidth =} \FloatTok{0.05}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{fill =} \DecValTok{8}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{geom\_density}\NormalTok{(}\AttributeTok{size =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{col =} \DecValTok{2}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =} \FloatTok{3.05}\NormalTok{, }\AttributeTok{lty =} \DecValTok{2}\NormalTok{, }\AttributeTok{color =} \StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+} 
+    \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \FloatTok{3.3}\NormalTok{, }\AttributeTok{y =} \FloatTok{0.35}\NormalTok{, }\AttributeTok{label =} \StringTok{"h1 = 3.05 "}\NormalTok{, }\AttributeTok{color =} \StringTok{"blue"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-bootstrapping-2024_files/figure-latex/problem_2_boot-1.pdf}
+
+Our test has given a p-value of 0.065 \textgreater{} 0.05, we fail to
+reject the null hypothesis that the number of modes is 1 concluding that
+the distribution of velocities is unimodal.
+
+\hypertarget{problem-3-continue-with-the-breast-cancer-sutdy}{%
+\subsection{Problem 3 (Continue with the breast cancer
+sutdy):}\label{problem-3-continue-with-the-breast-cancer-sutdy}}
+
+Recall that in the last homework, you have analyzed the
+\textit{breast-cancer2.csv} using logistic-LASSO to classify cancer
+images. There is one turning parameter \(\lambda\) in logistic LASSO
+that controls the shrinkage effect.
+
+\begin{enumerate}
+\item Please implement a 5-fold cross-validation algorithm to select the optimal tuning parameter in your logistic LASSO regression.
+
+\item Please use the "optimal" logistic LASSO (obtained from 5-fold cross-validation) to predict the probability of malignancy for each of the images. Keep in mind that the direct estimates from logistic-Lasso may be biased, so it's important to re-fit the logistic regression with the selected predictors to get a more accurate probability estimate. Also, how well the selected predictors classify the images? You can measure  the prediction accuracy using the AUC metric.
+
+\item Implementing the Bootstraping Smoothing algorithm to re-evaluate the probabilities of malignancy. How well do the new predictors classify the images, and how does it compare to the "optimal" one in 2 ?
+
+\item Writ a summary of your findings.
+\end{enumerate}
+
+\hypertarget{answer-3.1}{%
+\subsubsection{Answer 3.1}\label{answer-3.1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{2024}\NormalTok{)}
+\NormalTok{breast\_dat }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"breast{-}cancer{-}2.csv"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{id) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{diagnosis =} \FunctionTok{as.factor}\NormalTok{(diagnosis)) }\SpecialCharTok{|\textgreater{}} 
+  \FunctionTok{na.omit}\NormalTok{()}
+
+\NormalTok{breast\_y }\OtherTok{=}\NormalTok{ breast\_dat}\SpecialCharTok{$}\NormalTok{diagnosis}
+\NormalTok{breast\_x }\OtherTok{=} \FunctionTok{as.matrix}\NormalTok{(breast\_dat }\SpecialCharTok{|\textgreater{}} \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{diagnosis))}
+
+
+\CommentTok{\#Spliting the dataset to train and test, with proportion 80\% and 20\%}
+\NormalTok{rowTrain }\OtherTok{=} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(breast\_x), }\FunctionTok{ceiling}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(breast\_x) }\SpecialCharTok{*} \FloatTok{0.8}\NormalTok{))}
+\NormalTok{y\_train }\OtherTok{=}\NormalTok{ breast\_y[rowTrain]}
+\NormalTok{X\_train }\OtherTok{=}\NormalTok{ breast\_x[rowTrain,]}
+
+\NormalTok{y\_test }\OtherTok{=}\NormalTok{ breast\_y[}\SpecialCharTok{{-}}\NormalTok{rowTrain]}
+\NormalTok{X\_test }\OtherTok{=}\NormalTok{ breast\_x[}\SpecialCharTok{{-}}\NormalTok{rowTrain,]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{OptimalLasso }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(lambdaseq, X\_train, y\_train, }\AttributeTok{K =}\DecValTok{5}\NormalTok{)\{}
+  
+\NormalTok{    AUC }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(score, bool) \{}
+\NormalTok{      n1 }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(}\SpecialCharTok{!}\NormalTok{bool)}
+\NormalTok{      n2 }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(bool)}
+\NormalTok{      U  }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(}\FunctionTok{rank}\NormalTok{(score)[}\SpecialCharTok{!}\NormalTok{bool]) }\SpecialCharTok{{-}}\NormalTok{ n1 }\SpecialCharTok{*}\NormalTok{ (n1 }\SpecialCharTok{+} \DecValTok{1}\NormalTok{) }\SpecialCharTok{/} \DecValTok{2}
+      \FunctionTok{return}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ U }\SpecialCharTok{/}\NormalTok{ n1 }\SpecialCharTok{/}\NormalTok{ n2)}
+\NormalTok{    \}}
+    
+    \CommentTok{\# for each lambda in lambda seq, do 5{-}fold cross{-}validation to get the cv accuracy}
+\NormalTok{    lassocv }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(cur, x, y, K) \{}
+\NormalTok{        folds }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{K, }\AttributeTok{length.out =} \FunctionTok{nrow}\NormalTok{(x)))}
+\NormalTok{            auclist }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+            \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{K)\{}
+\NormalTok{            testidx }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(folds }\SpecialCharTok{==}\NormalTok{ i)}
+\NormalTok{            xtest }\OtherTok{\textless{}{-}}\NormalTok{ x[testidx,]}
+\NormalTok{            ytest }\OtherTok{\textless{}{-}}\NormalTok{ y[testidx]}
+\NormalTok{            xtrain }\OtherTok{\textless{}{-}}\NormalTok{ x[}\SpecialCharTok{{-}}\NormalTok{testidx,]}
+\NormalTok{            ytrain }\OtherTok{\textless{}{-}}\NormalTok{ y[}\SpecialCharTok{{-}}\NormalTok{testidx]}
+            \CommentTok{\# model fit with given lambda}
+\NormalTok{            modeltmp }\OtherTok{\textless{}{-}} \FunctionTok{glmnet}\NormalTok{(xtrain, ytrain, }\AttributeTok{standardize =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{family =} \StringTok{"binomial"}\NormalTok{, }\AttributeTok{alpha =} \DecValTok{1}\NormalTok{, }\AttributeTok{lambda =}\NormalTok{ cur)}
+            \CommentTok{\# predict on the validation set}
+\NormalTok{            ypred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(modeltmp, xtest, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+            \CommentTok{\# calculate AUC}
+\NormalTok{            auc }\OtherTok{\textless{}{-}} \FunctionTok{AUC}\NormalTok{(ypred, }\FunctionTok{ifelse}\NormalTok{(ytest }\SpecialCharTok{==} \StringTok{"B"}\NormalTok{, }\ConstantTok{FALSE}\NormalTok{, }\ConstantTok{TRUE}\NormalTok{))}
+            \CommentTok{\# add cv result to list}
+\NormalTok{            auclist }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(auclist, auc)}
+\NormalTok{        \}}
+        \CommentTok{\# just return the mean accuracy}
+        \FunctionTok{return}\NormalTok{(}\FunctionTok{mean}\NormalTok{(auclist))}
+\NormalTok{    \}}
+    
+    \CommentTok{\# get the auc and lambdas}
+\NormalTok{    cv.res }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(lambdaseq, }\AttributeTok{FUN =} \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{lassocv}\NormalTok{(x, X\_train, y\_train, }\DecValTok{5}\NormalTok{))}
+\NormalTok{    cv.res.df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{lambdas =}\NormalTok{ lambdaseq, }\AttributeTok{auc =}\NormalTok{ cv.res)}
+    \CommentTok{\# return best lambda on cv result}
+    \CommentTok{\# but so much NAN AND 1 there for the real{-}world data}
+\NormalTok{    best.lambda }\OtherTok{\textless{}{-}}\NormalTok{ cv.res.df[}\FunctionTok{which}\NormalTok{(cv.res.df}\SpecialCharTok{$}\NormalTok{auc }\SpecialCharTok{==} \FunctionTok{max}\NormalTok{(cv.res.df}\SpecialCharTok{$}\NormalTok{auc)),]}\SpecialCharTok{$}\NormalTok{lambdas}
+    
+    \CommentTok{\# refit lasso based on best lambda}
+\NormalTok{    best.model }\OtherTok{\textless{}{-}} \FunctionTok{glmnet}\NormalTok{(X\_train, y\_train, }\AttributeTok{standardize =} \ConstantTok{TRUE}\NormalTok{,}
+                         \AttributeTok{family =} \StringTok{"binomial"}\NormalTok{, }\AttributeTok{alpha =} \DecValTok{1}\NormalTok{, }\AttributeTok{lambda =}\NormalTok{ best.lambda)}
+    \FunctionTok{coef}\NormalTok{(best.model)}
+    
+\NormalTok{    best.model.coef }\OtherTok{\textless{}{-}} \FunctionTok{as.matrix}\NormalTok{(}\FunctionTok{coef}\NormalTok{(best.model))}
+\NormalTok{    imp.predictors }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(best.model.coef[best.model.coef }\SpecialCharTok{!=} \DecValTok{0}\NormalTok{,])}
+\NormalTok{    imp.predictors }\OtherTok{=}\NormalTok{ imp.predictors[}\DecValTok{2}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(imp.predictors)]}
+    
+\NormalTok{    optimal.res }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}\AttributeTok{lambda =}\NormalTok{ best.lambda,}
+                        \AttributeTok{cvResult =}\NormalTok{ cv.res.df,}
+                        \AttributeTok{bestModel =}\NormalTok{ best.model,}
+                        \AttributeTok{impPredictor =}\NormalTok{ imp.predictors)}
+    \FunctionTok{return}\NormalTok{(optimal.res)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{2024}\NormalTok{)}
+\NormalTok{cl2 }\OtherTok{\textless{}{-}} \FunctionTok{makeCluster}\NormalTok{(}\DecValTok{15}\NormalTok{ , }\AttributeTok{outfile =} \StringTok{""}\NormalTok{)}
+\FunctionTok{registerDoParallel}\NormalTok{(cl2)}
+\FunctionTok{clusterExport}\NormalTok{(}\AttributeTok{cl=}\NormalTok{cl2, }\FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}OptimalLasso\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}X\_train\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}y\_train\textquotesingle{}}\NormalTok{))}
+\NormalTok{optimal.fit }\OtherTok{\textless{}{-}} \FunctionTok{OptimalLasso}\NormalTok{(}\FunctionTok{exp}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{8}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\AttributeTok{length =} \DecValTok{201}\NormalTok{)), X\_train, y\_train)}
+\FunctionTok{stopCluster}\NormalTok{(cl2)}
+\end{Highlighting}
+\end{Shaded}
+
+The 5-fold cross-validation gives us a best lambda 0.0016783, and the
+selected important variables under this lambda are texture\_mean,
+area\_mean, smoothness\_mean, compactness\_mean, concavity\_mean,
+concave points\_mean, symmetry\_mean, fractal\_dimension\_mean.
+
+\hypertarget{answer-3.2}{%
+\subsubsection{Answer 3.2}\label{answer-3.2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{AUC }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(score, bool) \{}
+\NormalTok{    n1 }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(}\SpecialCharTok{!}\NormalTok{bool)}
+\NormalTok{    n2 }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(bool)}
+\NormalTok{    U  }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(}\FunctionTok{rank}\NormalTok{(score)[}\SpecialCharTok{!}\NormalTok{bool]) }\SpecialCharTok{{-}}\NormalTok{ n1 }\SpecialCharTok{*}\NormalTok{ (n1 }\SpecialCharTok{+} \DecValTok{1}\NormalTok{) }\SpecialCharTok{/} \DecValTok{2}
+    \FunctionTok{return}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ U }\SpecialCharTok{/}\NormalTok{ n1 }\SpecialCharTok{/}\NormalTok{ n2)}
+\NormalTok{\}}
+
+\NormalTok{logit.fit }\OtherTok{\textless{}{-}} \FunctionTok{glmnet}\NormalTok{(X\_train[,optimal.fit}\SpecialCharTok{$}\NormalTok{impPredictor], y\_train, }\AttributeTok{family =} \FunctionTok{binomial}\NormalTok{(}\AttributeTok{link =} \StringTok{"logit"}\NormalTok{), }\AttributeTok{lambda =} \DecValTok{0}\NormalTok{)}
+\NormalTok{logit.train.prob }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(logit.fit, X\_train[,optimal.fit}\SpecialCharTok{$}\NormalTok{impPredictor], }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+\NormalTok{logit.test.prob }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(logit.fit, X\_test[,optimal.fit}\SpecialCharTok{$}\NormalTok{impPredictor], }\AttributeTok{type =} \StringTok{"response"}\NormalTok{)}
+\NormalTok{logit.train.auc }\OtherTok{\textless{}{-}} \FunctionTok{AUC}\NormalTok{(logit.train.prob, }\FunctionTok{ifelse}\NormalTok{(y\_train }\SpecialCharTok{==} \StringTok{"B"}\NormalTok{, }\ConstantTok{FALSE}\NormalTok{, }\ConstantTok{TRUE}\NormalTok{))}
+\NormalTok{logit.test.auc }\OtherTok{\textless{}{-}} \FunctionTok{AUC}\NormalTok{(logit.test.prob, }\FunctionTok{ifelse}\NormalTok{(y\_test }\SpecialCharTok{==} \StringTok{"B"}\NormalTok{, }\ConstantTok{FALSE}\NormalTok{, }\ConstantTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+By refitting the logistic model using the important variables on the
+training dataset, we get a AUC = 0.98897 on training set and a AUC =
+0.97574 on test set. Which means the selected predictors classify the
+images pretty well.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Implementing the Bootstraping Smoothing algorithm to re-evaluate the
+  probabilities of malignancy. How well do the new predictors classify
+  the images, and how does it compare to the ``optimal'' one in 2 ?
+\end{enumerate}
+
+\hypertarget{answer-3.3}{%
+\subsubsection{Answer 3.3}\label{answer-3.3}}
+
+Efron's 2014 paper in the Journal of the American Statistical
+Association (JASA) touches on a crucial point in statistical theory,
+particularly regarding the role of model selection in estimation
+accuracy. The paper outlines a methodology that incorporates model
+selection into the estimation of standard errors and confidence
+intervals through bootstrap methods. This approach is noteworthy for its
+attempt to address the challenges posed by the discontinuous nature of
+selection-based estimators, utilizing bagging (bootstrap smoothing) as a
+key tool.
+
+\hypertarget{point-estimation-process}{%
+\subsubsection{Point Estimation
+Process}\label{point-estimation-process}}
+
+The process for point estimation as outlined involves: 1.
+\textbf{Bootstrap Replications}: Conducting a series of bootstrap
+replications, denoted as \(B\) times. In each replication, a best model
+is selected based on the bootstrap sample \(y_i^*\). 2.
+\textbf{Coefficient Estimates}: For each bootstrap sample, an estimate
+for the coefficient is obtained, denoted as \(t(y_i^*)\) for
+\(i=1,2,\dots,B\). 3. \textbf{Averaging Over Bootstrap Replications}:
+The final smoothed estimate \(\tilde{\mu}\) is calculated by averaging
+these estimates over all \(B\) bootstrap replications, resulting in
+\(\tilde{\mu} = s(y) = \frac{1}{B}\sum_{i=1}^B t(y_i^*)\).
+
+\hypertarget{inference}{%
+\subsubsection{Inference}\label{inference}}
+
+For the inference part, the approach is detailed as follows: 1.
+\textbf{Representation of Bootstrap Replicates}: \(Y_{ij}^*\) is defined
+to represent the frequency of the \(j^{th}\) data point's appearance in
+the \(i^{th}\) bootstrap replicate. This formulation allows \(Y_i^*\) to
+be modeled as following a multinomial distribution with parameters that
+reflect the bootstrap process. 2. \textbf{Estimation of Standard
+Deviation}: The nonparametric delta-method is introduced for estimating
+the standard deviation of \(s(y)\) in scenarios that deviate from the
+ideal bootstrap. The standard deviation, \(\tilde{sd}_B\), is computed
+as \(\tilde{sd}_B = [\sum_{j=1}^n\hat{cov}_j^2]^{1/2}\), where
+\(\hat{cov}_j\) represents the covariance estimates calculated as
+\(\hat{cov}_j = \sum_{i=1}^B(Y_{ij}^*-Y_{.j}^*)(t_i^*-t_.^*)/B\).
+
+\hypertarget{summary}{%
+\subsubsection{Summary}\label{summary}}
+
+This methodology represents a significant effort to integrate model
+selection into the assessment of estimation accuracy, acknowledging the
+complexities and discontinuities that can arise from model selection
+processes. By employing bootstrap smoothing, the approach seeks to
+provide more stable and accurate estimations and confidence intervals,
+accounting for the variability introduced by the model selection. This
+work underscores the evolving understanding of bootstrap methods and
+their potential to enhance statistical inference, especially in contexts
+where model selection plays a critical role.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{BootSmoothing }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(X\_train, y\_train, nboot, K)\{}
+    \CommentTok{\# Delta{-}method}
+\NormalTok{    coefInference }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x, Ys, coefMtx, predictors, nboot)\{}
+\NormalTok{        var.smooth }\OtherTok{\textless{}{-}} \DecValTok{0}
+\NormalTok{        tdot }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(coefMtx[, predictors])}
+        \ControlFlowTok{for}\NormalTok{(j }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(x))\{}
+\NormalTok{            cov.j }\OtherTok{\textless{}{-}} \DecValTok{0}
+\NormalTok{            yj }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(Ys[,j])}
+            \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in}\NormalTok{ nboot) \{}
+\NormalTok{                cov.j }\OtherTok{\textless{}{-}}\NormalTok{ cov.j }\SpecialCharTok{+}\NormalTok{ (Ys[i,j] }\SpecialCharTok{{-}}\NormalTok{ yj) }\SpecialCharTok{*}\NormalTok{ (coefMtx[i, predictors] }\SpecialCharTok{{-}}\NormalTok{ tdot)}
+\NormalTok{            \}}
+\NormalTok{            var.smooth }\OtherTok{\textless{}{-}}\NormalTok{ var.smooth }\SpecialCharTok{+}\NormalTok{ (cov.j}\SpecialCharTok{/}\NormalTok{nboot)}\SpecialCharTok{\^{}}\DecValTok{2}
+\NormalTok{        \}}
+\NormalTok{        sd.smooth }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(var.smooth)}
+        \FunctionTok{return}\NormalTok{(sd.smooth)}
+\NormalTok{    \}}
+
+    \CommentTok{\# Bootstrap smooth main method}
+    \CommentTok{\# Parallel Computing}
+\NormalTok{    res.bs }\OtherTok{\textless{}{-}} \FunctionTok{foreach}\NormalTok{(}\FunctionTok{icount}\NormalTok{(nboot), }\AttributeTok{.combine =}\NormalTok{ rbind, }\AttributeTok{.packages =} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}glmnet\textquotesingle{}}\NormalTok{)) }\SpecialCharTok{\%dopar\%}\NormalTok{ \{}
+\NormalTok{        coefList }\OtherTok{=} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{10} \SpecialCharTok{+} \DecValTok{1}\NormalTok{)}
+        \FunctionTok{names}\NormalTok{(coefList) }\OtherTok{=} \FunctionTok{c}\NormalTok{(}\StringTok{"(Intercept)"}\NormalTok{, }\FunctionTok{colnames}\NormalTok{(X\_train))}
+        \CommentTok{\# bootstrap}
+\NormalTok{        rowBoot }\OtherTok{=} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(X\_train), }\AttributeTok{replace =} \ConstantTok{TRUE}\NormalTok{)}
+        \CommentTok{\# Yij, the \# of jth data appears}
+\NormalTok{        Yij }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FunctionTok{length}\NormalTok{(y\_train))}
+        \ControlFlowTok{for}\NormalTok{(j }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(y\_train))\{}
+\NormalTok{            Yij[j] }\OtherTok{=} \FunctionTok{sum}\NormalTok{(j }\SpecialCharTok{==}\NormalTok{ rowBoot)}
+\NormalTok{        \}}
+        
+\NormalTok{        xboot }\OtherTok{\textless{}{-}}\NormalTok{ X\_train[rowBoot,]}
+\NormalTok{        yboot }\OtherTok{\textless{}{-}}\NormalTok{ y\_train[rowBoot]}
+        \CommentTok{\# do the cv{-}lasso optimization}
+\NormalTok{        bootcv }\OtherTok{\textless{}{-}} \FunctionTok{OptimalLasso}\NormalTok{(}\FunctionTok{exp}\NormalTok{(}\FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{8}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\AttributeTok{length =} \DecValTok{201}\NormalTok{)), xboot, yboot)}
+        \CommentTok{\# get the best lambda and coef from the refited logit model }
+        \CommentTok{\# as well as the selected predictors in bestModel}
+\NormalTok{        chosen }\OtherTok{\textless{}{-}}\NormalTok{ bootcv}\SpecialCharTok{$}\NormalTok{impPredictor}
+\NormalTok{        logitfit }\OtherTok{=} \FunctionTok{glmnet}\NormalTok{(X\_train[,chosen], y\_train, }\AttributeTok{family =} \FunctionTok{binomial}\NormalTok{(}\AttributeTok{link =} \StringTok{"logit"}\NormalTok{), }\AttributeTok{lambda =} \DecValTok{0}\NormalTok{)}
+\NormalTok{        logitcoef }\OtherTok{=} \FunctionTok{as.matrix}\NormalTok{(}\FunctionTok{coef}\NormalTok{(logitfit))}
+\NormalTok{        bestlambda }\OtherTok{\textless{}{-}}\NormalTok{ bootcv}\SpecialCharTok{$}\NormalTok{lambda}
+        
+        \ControlFlowTok{for}\NormalTok{ (p }\ControlFlowTok{in} \FunctionTok{c}\NormalTok{(}\StringTok{"(Intercept)"}\NormalTok{, chosen))\{}
+\NormalTok{            coefList[p] }\OtherTok{=}\NormalTok{ logitcoef[p, }\DecValTok{1}\NormalTok{]}
+\NormalTok{        \}}
+        
+        \FunctionTok{cbind}\NormalTok{(bestlambda, }\FunctionTok{t}\NormalTok{(Yij), }\FunctionTok{t}\NormalTok{(coefList))}
+        
+\NormalTok{    \}}
+    
+\NormalTok{    Yij }\OtherTok{\textless{}{-}}\NormalTok{ res.bs[, }\DecValTok{2}\SpecialCharTok{:}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(X\_train) }\SpecialCharTok{+} \DecValTok{1}\NormalTok{)]}
+\NormalTok{    coefMtx }\OtherTok{\textless{}{-}}\NormalTok{ res.bs[,(}\FunctionTok{nrow}\NormalTok{(X\_train) }\SpecialCharTok{+} \DecValTok{2}\NormalTok{)}\SpecialCharTok{:}\FunctionTok{ncol}\NormalTok{(res.bs)]}
+    \CommentTok{\# the smoothed sd}
+\NormalTok{    bs.sd }\OtherTok{\textless{}{-}} \FunctionTok{sapply}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"(Intercept)"}\NormalTok{, }\FunctionTok{colnames}\NormalTok{(X\_train)), }\AttributeTok{FUN =} \ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{coefInference}\NormalTok{(X\_train, Yij, coefMtx, x, nboot))}
+    
+\NormalTok{    res }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}
+        \AttributeTok{smooth.coef =} \FunctionTok{colMeans}\NormalTok{(coefMtx),}
+        \AttributeTok{coef.smooth.sd =}\NormalTok{ bs.sd,}
+        \AttributeTok{coef.std =} \FunctionTok{apply}\NormalTok{(coefMtx, }\DecValTok{2}\NormalTok{, sd),}
+        \AttributeTok{coef.matrix =}\NormalTok{ coefMtx,}
+        \AttributeTok{chosen.prob =} \FunctionTok{colMeans}\NormalTok{(coefMtx }\SpecialCharTok{!=} \DecValTok{0}\NormalTok{),}
+        \AttributeTok{best.lambdas =}\NormalTok{ res.bs[,}\DecValTok{1}\NormalTok{]}
+\NormalTok{    )}
+    \FunctionTok{return}\NormalTok{(res)}
+    
+\NormalTok{\}}
+
+\CommentTok{\# return a list contains}
+\CommentTok{\# smooth.coef: bootstrap smoothed regression parameter}
+\CommentTok{\# smooth.sd: sd of smooth.coef}
+\CommentTok{\# smooth.std: standard error of smooth.coef}
+\CommentTok{\# coef.matrix: result of bootstrap regression parameters}
+\CommentTok{\# chosen.prob: probability of predictors to be choose}
+\CommentTok{\# best.lambdas: best lambda in each bootstrap sample}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{2024}\NormalTok{)}
+\NormalTok{cl3 }\OtherTok{\textless{}{-}} \FunctionTok{makeCluster}\NormalTok{(}\DecValTok{15}\NormalTok{ , }\AttributeTok{outfile =} \StringTok{"log.out"}\NormalTok{)}
+\FunctionTok{registerDoParallel}\NormalTok{(cl3)}
+\FunctionTok{clusterExport}\NormalTok{(}\AttributeTok{cl =}\NormalTok{ cl3, }\FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}OptimalLasso\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}X\_train\textquotesingle{}}\NormalTok{,}\StringTok{\textquotesingle{}y\_train\textquotesingle{}}\NormalTok{))}
+\NormalTok{bs.res }\OtherTok{\textless{}{-}} \FunctionTok{BootSmoothing}\NormalTok{(X\_train, y\_train, }\DecValTok{1000}\NormalTok{, }\DecValTok{5}\NormalTok{)}
+\FunctionTok{stopCluster}\NormalTok{(cl3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bs.eta.train }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(}\DecValTok{1}\NormalTok{, X\_train) }\SpecialCharTok{\%*\%}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{smooth.coef}
+\NormalTok{bs.eta.test }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(}\DecValTok{1}\NormalTok{, X\_test) }\SpecialCharTok{\%*\%}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{smooth.coef}
+
+\NormalTok{bs.pred.train }\OtherTok{\textless{}{-}}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{bs.eta.train)) }\SpecialCharTok{\^{}}\NormalTok{ (}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)}
+\NormalTok{bs.pred.test }\OtherTok{\textless{}{-}}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{+} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{bs.eta.test)) }\SpecialCharTok{\^{}}\NormalTok{ (}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)}
+
+\NormalTok{bs.auc.train }\OtherTok{\textless{}{-}} \FunctionTok{AUC}\NormalTok{(bs.pred.train, }\FunctionTok{ifelse}\NormalTok{(y\_train }\SpecialCharTok{==} \StringTok{"B"}\NormalTok{, }\ConstantTok{FALSE}\NormalTok{, }\ConstantTok{TRUE}\NormalTok{))}
+\NormalTok{bs.auc.test }\OtherTok{\textless{}{-}} \FunctionTok{AUC}\NormalTok{(bs.pred.test, }\FunctionTok{ifelse}\NormalTok{(y\_test }\SpecialCharTok{==} \StringTok{"B"}\NormalTok{, }\ConstantTok{FALSE}\NormalTok{, }\ConstantTok{TRUE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+By implementing bagging, we get a AUC = 0.98889 on training set and a
+AUC = 0.97644 on test set. Which means the bootstrap smoothed model
+outperform the previous model on test data(test AUC = 0.97574)), but the
+results are fairly close for training sets(train AUC = 0.98897).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Write a summary of your findings.
+\end{enumerate}
+
+\hypertarget{distribution-of-lambdas-from-bootstrap-replicates}{%
+\subsubsection{Distribution of lambdas from bootstrap
+replicates}\label{distribution-of-lambdas-from-bootstrap-replicates}}
+
+From the histogram and density plot below, we see that the distribution
+of bootstrap replicates of \(\lambda\) shows a multimodal pattern. Since
+each bootstrap replicate is a random sample with replacement from the
+observed data, we are excluding different observations, and the
+multimodal pattern suggests that this variability in exclusion of
+observations may have impact in parameter selection.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\NormalTok{bs.best.lambdas }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{lambdas =}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{best.lambdas)}
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ bs.best.lambdas, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{log}\NormalTok{(lambdas))) }\SpecialCharTok{+}
+    \FunctionTok{geom\_histogram}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ ..density..), }\AttributeTok{binwidth =} \FloatTok{0.1}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{geom\_density}\NormalTok{() }\SpecialCharTok{+}
+    \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =} \FunctionTok{log}\NormalTok{(optimal.fit}\SpecialCharTok{$}\NormalTok{lambda), }\AttributeTok{lty =} \DecValTok{2}\NormalTok{, }\AttributeTok{color =} \StringTok{\textquotesingle{}blue\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+} 
+    \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =} \FunctionTok{mean}\NormalTok{(}\FunctionTok{log}\NormalTok{(bs.best.lambdas}\SpecialCharTok{$}\NormalTok{lambdas)), }\AttributeTok{lty =} \DecValTok{1}\NormalTok{, }\AttributeTok{color =} \StringTok{\textquotesingle{}red\textquotesingle{}}\NormalTok{) }\SpecialCharTok{+} 
+    \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \SpecialCharTok{{-}}\DecValTok{7}\NormalTok{, }\AttributeTok{y =} \FloatTok{0.35}\NormalTok{, }\AttributeTok{label =} \StringTok{"5{-}fold{-}cv best lambda e\^{}\{{-}6.8\} "}\NormalTok{, }\AttributeTok{color =} \StringTok{"blue"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{annotate}\NormalTok{(}\StringTok{"text"}\NormalTok{, }\AttributeTok{x =} \SpecialCharTok{{-}}\DecValTok{5}\NormalTok{, }\AttributeTok{y =} \FloatTok{0.25}\NormalTok{, }\AttributeTok{label =} \StringTok{"bootstrap mean lambda e\^{}\{{-}6.2\} "}\NormalTok{, }\AttributeTok{color =} \StringTok{"red"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-bootstrapping-2024_files/figure-latex/boot_lambdas-1.pdf}
+
+\hypertarget{variance-reduction-of-estimated-coefficients}{%
+\subsubsection{Variance reduction of estimated
+coefficients}\label{variance-reduction-of-estimated-coefficients}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{logisticCoef }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{10} \SpecialCharTok{+} \DecValTok{1}\NormalTok{)}
+\FunctionTok{names}\NormalTok{(logisticCoef) }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(bs.res}\SpecialCharTok{$}\NormalTok{smooth.coef)}
+\ControlFlowTok{for}\NormalTok{ (pr }\ControlFlowTok{in} \FunctionTok{names}\NormalTok{(}\FunctionTok{as.matrix}\NormalTok{(}\FunctionTok{coef}\NormalTok{(logit.fit))[,])) \{}
+\NormalTok{    logisticCoef[pr] }\OtherTok{=} \FunctionTok{as.matrix}\NormalTok{(}\FunctionTok{coef}\NormalTok{(logit.fit))[pr,]}
+\NormalTok{\}}
+
+\NormalTok{bs.inference }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+    \AttributeTok{predictors =} \FunctionTok{names}\NormalTok{(bs.res}\SpecialCharTok{$}\NormalTok{smooth.coef),}
+    \AttributeTok{origin.coef =}\NormalTok{ logisticCoef,}
+    \AttributeTok{smooth.coef =}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{smooth.coef,}
+    \AttributeTok{chosen.prob =}\NormalTok{ scales}\SpecialCharTok{::}\FunctionTok{percent}\NormalTok{(bs.res}\SpecialCharTok{$}\NormalTok{chosen.prob),}
+    \AttributeTok{sd =}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{coef.std,}
+    \AttributeTok{smooth.sd =}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{coef.smooth.sd,}
+    \AttributeTok{ci.L =}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{smooth.coef }\SpecialCharTok{{-}} \FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{) }\SpecialCharTok{*}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{coef.std,}
+    \AttributeTok{ci.R =}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{smooth.coef }\SpecialCharTok{+} \FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{) }\SpecialCharTok{*}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{coef.std,}
+    \AttributeTok{smoothed.ci.L =}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{smooth.coef }\SpecialCharTok{{-}} \FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{) }\SpecialCharTok{*}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{coef.smooth.sd,}
+    \AttributeTok{smoothed.ci.R =}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{smooth.coef }\SpecialCharTok{+} \FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{) }\SpecialCharTok{*}\NormalTok{ bs.res}\SpecialCharTok{$}\NormalTok{coef.smooth.sd}
+\NormalTok{)}
+
+\NormalTok{bs.inference }\SpecialCharTok{|\textgreater{}}\NormalTok{ knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\AttributeTok{caption =} \StringTok{"Bootstrap smoothing result"}\NormalTok{, }\AttributeTok{digits =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{|\textgreater{}} 
+\NormalTok{    kableExtra}\SpecialCharTok{::}\FunctionTok{kable\_styling}\NormalTok{(}\AttributeTok{latex\_options =} \FunctionTok{c}\NormalTok{(}\StringTok{"hold\_position"}\NormalTok{, }\StringTok{"scale\_down"}\NormalTok{),}
+                              \AttributeTok{font\_size =} \DecValTok{8}\NormalTok{,}\AttributeTok{full\_width =}\NormalTok{ F) }\SpecialCharTok{|\textgreater{}} 
+\NormalTok{    kableExtra}\SpecialCharTok{::}\FunctionTok{add\_footnote}\NormalTok{(}
+        \FunctionTok{c}\NormalTok{(}\StringTok{"Bootstap time=1000"}\NormalTok{, }
+          \StringTok{"origin.coef: estimation from selected predictors logistic regression"}\NormalTok{, }
+          \StringTok{"smoothed.coef: estimation from Smoothed Bootstrap"}\NormalTok{, }
+          \StringTok{"chosen.prob: chosen probability from Smoothed Bootstrap"}\NormalTok{, }
+          \StringTok{"sd: standard deviation of estimate"}\NormalTok{,}
+          \StringTok{"smooth.sd: nonparamatric delta{-}method estimate of standard deviation"}\NormalTok{, }
+          \StringTok{"ci.L, ci.R:  lower and upper CI of estimate derived from standard deviation"}\NormalTok{, }
+          \StringTok{"ci.smoothed.L, ci.smoothed.R: lower and upper CI from nonparamatric delta{-}method estimate"}\NormalTok{),}
+        \AttributeTok{notation =} \StringTok{"alphabet"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begingroup\fontsize{8}{10}\selectfont
+
+\begin{longtable}[t]{llrrlrrrrrr}
+\caption{\label{tab:bs_var_reduce}Bootstrap smoothing result}\\
+\toprule
+ & predictors & origin.coef & smooth.coef & chosen.prob & sd & smooth.sd & ci.L & ci.R & smoothed.ci.L & smoothed.ci.R\\
+\midrule
+(Intercept) & (Intercept) & -31.300 & -28.182 & 100.0\% & 6.387 & 0.067 & -40.700 & -15.664 & -28.313 & -28.051\\
+radius\_mean & radius\_mean & 0.000 & -0.066 & 20.8\% & 0.899 & 0.001 & -1.829 & 1.697 & -0.069 & -0.063\\
+texture\_mean & texture\_mean & 0.434 & 0.423 & 100.0\% & 0.021 & 0.000 & 0.381 & 0.464 & 0.422 & 0.423\\
+perimeter\_mean & perimeter\_mean & 0.000 & -0.011 & 18.7\% & 0.088 & 0.000 & -0.183 & 0.160 & -0.012 & -0.011\\
+area\_mean & area\_mean & 0.014 & 0.015 & 81.5\% & 0.011 & 0.000 & -0.006 & 0.036 & 0.015 & 0.015\\
+\addlinespace
+smoothness\_mean & smoothness\_mean & 81.185 & 71.440 & 90.7\% & 25.841 & 0.209 & 20.793 & 122.087 & 71.030 & 71.850\\
+compactness\_mean & compactness\_mean & -13.304 & -6.042 & 48.5\% & 7.049 & 0.156 & -19.857 & 7.773 & -6.347 & -5.737\\
+concavity\_mean & concavity\_mean & 13.345 & 10.419 & 86.3\% & 5.542 & 0.063 & -0.444 & 21.282 & 10.296 & 10.542\\
+concave points\_mean & concave points\_mean & 43.072 & 47.004 & 97.1\% & 18.791 & 0.084 & 10.175 & 83.832 & 46.838 & 47.169\\
+symmetry\_mean & symmetry\_mean & 28.105 & 23.802 & 87.9\% & 8.917 & 0.092 & 6.326 & 41.279 & 23.621 & 23.983\\
+\addlinespace
+fractal\_dimension\_mean & fractal\_dimension\_mean & -21.261 & -28.112 & 62.4\% & 32.043 & 0.147 & -90.915 & 34.690 & -28.400 & -27.824\\
+\bottomrule
+\end{longtable}
+\endgroup{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bs.inference }\SpecialCharTok{|\textgreater{}} 
+    \FunctionTok{select}\NormalTok{(}\FunctionTok{c}\NormalTok{(predictors, smooth.coef, ci.L, ci.R, smoothed.ci.L, smoothed.ci.R)) }\SpecialCharTok{|\textgreater{}} 
+    \FunctionTok{rename}\NormalTok{(}
+        \AttributeTok{CI\_L\_standard =}\NormalTok{ ci.L,}
+        \AttributeTok{CI\_R\_standard =}\NormalTok{ ci.R,}
+        \AttributeTok{CI\_L\_smoothed =}\NormalTok{ smoothed.ci.L,}
+        \AttributeTok{CI\_R\_smoothed =}\NormalTok{ smoothed.ci.R,}
+\NormalTok{    ) }\SpecialCharTok{|\textgreater{}} 
+    \FunctionTok{pivot\_longer}\NormalTok{(}\AttributeTok{cols =}\NormalTok{ CI\_L\_standard}\SpecialCharTok{:}\NormalTok{CI\_R\_smoothed, }
+                 \AttributeTok{names\_to =} \FunctionTok{c}\NormalTok{(}\StringTok{"drop"}\NormalTok{, }\StringTok{"LR"}\NormalTok{,}\StringTok{"type"}\NormalTok{), }
+                 \AttributeTok{names\_sep =} \StringTok{"\_"}\NormalTok{,}
+                 \AttributeTok{values\_to =} \StringTok{"bound"}\NormalTok{ ) }\SpecialCharTok{|\textgreater{}} 
+    \FunctionTok{select}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"predictors"}\NormalTok{, }\StringTok{"smooth.coef"}\NormalTok{, }\StringTok{"LR"}\NormalTok{, }\StringTok{"type"}\NormalTok{, }\StringTok{"bound"}\NormalTok{)) }\SpecialCharTok{|\textgreater{}} 
+    \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ LR, }\AttributeTok{values\_from =}\NormalTok{ bound) }\SpecialCharTok{|\textgreater{}} 
+    \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ predictors, }\AttributeTok{y =}\NormalTok{ smooth.coef, }\AttributeTok{color =}\NormalTok{ type, }\AttributeTok{group =}\NormalTok{ type)) }\SpecialCharTok{+} 
+    \FunctionTok{geom\_errorbar}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{ymin =}\NormalTok{ L, }\AttributeTok{ymax =}\NormalTok{ R), }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{position =} \FunctionTok{position\_dodge}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.4}\NormalTok{)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{size =}\NormalTok{ .}\DecValTok{8}\NormalTok{, }\AttributeTok{position =} \FunctionTok{position\_dodge}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.4}\NormalTok{)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \DecValTok{1}\NormalTok{, }\AttributeTok{shape =} \DecValTok{3}\NormalTok{, }\AttributeTok{position =} \FunctionTok{position\_dodge}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.4}\NormalTok{)) }\SpecialCharTok{+}
+    \FunctionTok{ylab}\NormalTok{(}\StringTok{"Estimate with CI"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{fill =} \StringTok{""}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.justification =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{), }\AttributeTok{legend.position =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{), }\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.6}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Homework-bootstrapping-2024_files/figure-latex/ci_plot-1.pdf}
+
+From the table and error bar plot above, we found that the bootstrap
+smoothed interval is narrower than the standard interval, corresponding
+to a reduced variance.
+
+\hypertarget{conclusion}{%
+\subsubsection{Conclusion}\label{conclusion}}
+
+In summary, by implementing the bootstrap smoothing, which takes the
+model selection process into account, we improved the model performance
+in prediction. And the bootstrap smoothing also gives us a nonparametric
+delta-method estimate of standard deviation with a narrower 95\%
+confidence interval.
+
+\hypertarget{bibilography}{%
+\subsection{Bibilography}\label{bibilography}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Rizzo, M.L. (2019). Statistical Computing with R (2nd ed.). Chapman
+  and Hall/CRC. \url{https://doi.org/10.1201/9780429192760}
+\item
+  Bradley Efron (2014) Estimation and Accuracy After Model Selection,
+  Journal of the American Statistical Association, 109:507, 991-1007,
+  DOI: 10.1080/01621459.2013.823775
+\end{enumerate}
+
+\end{document}
