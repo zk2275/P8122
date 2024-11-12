@@ -1,0 +1,79 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+# 5
+
+```{r }
+estimate_theta_U <- function(n) {
+    U <- runif(n)
+    theta_U <- mean(sqrt(1 - U^2) - cov(U, sqrt(1 - U^2)) / var(U) * (U - mean(U)))
+    variance_U <- var(sqrt(1 - U^2) - cov(U, sqrt(1 - U^2)) / var(U) * (U - mean(U)))
+    return(list(theta = theta_U, variance = variance_U))
+}
+
+estimate_theta_U2 <- function(n) {
+    U <- runif(n)
+    theta_U2 <- mean(sqrt(1 - U^2) - cov(U^2, sqrt(1 - U^2)) / var(U^2) * (U^2 - mean(U^2)))
+    variance_U2 <- var(sqrt(1 - U^2) - cov(U^2, sqrt(1 - U^2))/ var(U^2) * (U^2 - mean(U^2)))
+    return(list(theta = theta_U2, variance = variance_U2))
+}
+
+estimate_theta_U(1000)
+estimate_theta_U2(1000)                      
+                       
+```
+
+# 7
+
+
+### Sample Size
+
+```{r}
+dnorm(56,40,sqrt(10))
+# Number of policyholders to simulate
+n <- 1e7
+```
+
+### Data Generation
+
+
+```{r}
+set.seed(64)
+# Sample policyholders' ages
+ages <- rnorm(n, mean = 40, sd = sqrt(10))
+
+# Initialize vector for annual health expenses
+annual_expenses <- numeric(n)
+
+# Assign and sample annual health expenses based on age groups
+for(i in 1:n) {
+  if(ages[i] >= 18 && ages[i] <= 35) {
+    # Young adults
+    annual_expenses[i] <- rgamma(1, shape = 2, rate = 1)
+  } else if(ages[i] > 35 && ages[i] <= 55) {
+    # Middle-aged adults
+    annual_expenses[i] <- rgamma(1, shape = 3, rate = 1/1.5)
+  } else {
+    # Senior adults
+    annual_expenses[i] <- rgamma(1, shape = 4, rate = 1/2)
+  }
+}
+
+# Calculate the expected annual health insurance premiums
+expected_premiums_total <- mean(annual_expenses)
+expected_premiums_young <- mean(annual_expenses[ages >= 18 & ages <= 35])
+expected_premiums_middle <- mean(annual_expenses[ages > 35 & ages <= 55])
+expected_premiums_senior <- mean(annual_expenses[ages > 55])
+
+# Print the results
+cat("Expected Annual Health Insurance Premiums:\n")
+cat("- Total Population:", expected_premiums_total, "\n")
+cat("- Young Adults (18-35):", expected_premiums_young, "\n")
+cat("- Middle-aged Adults (36-55):", expected_premiums_middle, "\n")
+cat("- Senior Adults (56+):", expected_premiums_senior, "\n")
+
+```

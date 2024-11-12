@@ -1,0 +1,137 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(flexdashboard)
+library(survival)
+library(quantreg)
+library(glmnet)
+library(MASS)
+library(pROC)
+library(ggplot2)
+library(htmltools)
+library(plotly)
+library(tidyverse)
+
+set.seed(2024)
+LOOP = 10
+```
+
+Column {data-width=50}
+-----------------------------------------------------------------------
+
+## Overall Setting
+
+
+## Forward Selection
+
+```{r,echo=FALSE}
+
+load("sen.RData")
+load("spe.RData")
+mse_sen <- mse_sen|>  
+  pivot_longer(
+      c('SLASSOsen','WCLASSOsen','WILASSOsen',
+      'SFSsen','WCFSsen','WIFSsen'), 
+       names_to = "Indicators", values_to = "values")
+p2 <- ggplot(mse_sen, aes(x = c, y = values, color = Indicators)) +
+  geom_line() + # Using points to plot the data
+  labs(title = "Plot of B.true1 and B.true2", x = "Index", y = "Beta Value") 
+
+p_plotly2 <- ggplotly(p2)
+p2
+
+```
+
+
+
+
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart C
+
+$$\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2$$
+
+
+
+### Chart D
+
+```{r, include=FALSE}
+n <- 1000
+# 20+20+20
+p <- 60 
+
+# thresh1
+thr <- sqrt(log(p)/n)
+thr
+
+# beta  
+##positiveandnegativeforthefirsthalf
+ b.true1.strong<-c(rep(thr+1,5),rep(-thr-1,5))
+ b.true1.weak1 <-c(rep(thr/2,5),rep(-thr/2,5))
+ b.true1.weak2 <-c(rep(thr/2,5),rep(-thr/2,5))
+##zeroforthesecondhalf
+ b.true0<-rep(0,p/2)
+
+b.true1       <- c(b.true1.strong,b.true1.weak1,b.true1.weak2,b.true0)
+
+
+# beta  
+
+
+## positive and negative for the first half
+b.true1.strong <- c(thr+abs(rnorm(5,thr,1)),-thr-abs(rnorm(5,thr,1)))
+b.true1.weak1   <- runif(10,-thr,thr)
+b.true1.weak2   <- runif(10,-thr,thr)
+## zero for the second half
+b.true0 <- rep(0,p/2)
+## combine them together
+b.true2       <- c(b.true1.strong,b.true1.weak1,b.true1.weak2,b.true0)
+
+```
+
+
+
+```{r, echo=FALSE}
+
+index<-c(1:60)
+group1<-rep("Group1",60)
+group2<-rep("Group2",60)
+B.true1<-cbind(b.true1,index,group1)
+B.true2<-cbind(b.true2,index,group2)
+B<-rbind(B.true1,B.true2)
+
+
+# Assuming B is correctly created and is a data frame
+B <- data.frame(B) # Ensuring B is a data frame
+colnames(B) <- c("Value", "Index", "Group") # Naming columns for clarity
+
+# Converting the appropriate columns to the correct data types
+B$Index <- as.numeric(B$Index)
+B$Group <- as.factor(B$Group)
+B$Value <- as.numeric(B$Value)
+
+
+
+# Assuming B is your data frame set up correctly
+
+# Create a ggplot2 object
+p1 <- ggplot(B, aes(x = Index, y = Value, color = Group)) +
+  geom_point() + # Using points to plot the data
+  labs(title = "Plot of B.true1 and B.true2", x = "Index", y = "Beta Value") +
+  scale_color_manual(values = c("Group1" = "blue", "Group2" = "red")) # Customizing colors
+
+# Convert the ggplot2 object to a plotly object
+p_plotly1 <- ggplotly(p1)
+p_plotly1
+
+```
+
