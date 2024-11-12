@@ -1,0 +1,19 @@
+So, just as Jasmine said, we fix values of beta in the first step, to see what's going on with the sensitivity, the specificity, and the mse.  
+
+Before explaining our results of iteration, let's see the plot at the bottom of the right corner.
+
+The beta.true in Group 1 are set fixed for only one test. Since we need to calculate the mean of mse and other statistics, we are suggested to generate different random beta values, which also obey the rules of definitions. But here, the c-value, which is known as a threshold in the definitions, is set as 1 in the plot. 
+
+With these beta, X and Y, we iterated the process of selecting variables with two different methods for 100 times, and then, get the average values for each sensitivity, specificity, and the mse.
+
+U may get confused about the abbreviation of the plot on the left side, and we put the explanation here for reference. For example, S means strong signals, we already know what LASSO means, and we only abb forward selection as FS.  Therefore, SLASSOspe stands for the specificity of selecting strong signals by LASSO.
+
+Now let's look at the plot on the right side. I assigned them to 2 panels, so we can analyze the results separately. First, for the sensitivity, we can see that all 6 lines have a tendency to increase. By the way, the dotted lines in the plot stand for the method of forward selection; the solid ones are created by LASSO. All the lines are fairly close to each other when the c-value is greater than 10, which means weak signals are gradually turned into strong signals, and all variables are selected successfully. Intuitively, when c-value is quite small, both LASSO and forward selection have a large sensitivity in strong signals group. For the rest parts, the green and red lines behaved similarly, but we should pay attention to the dotted lines, the weak-but-correlated and weak-and-independent are almost the same in the forward selection group. Instead, in the LASSO group, when c-value is less than 1, weak-but-correlated covariates can be relatively easier to be identified.
+
+However, the pattern in specificity is more clear. LASSO generally has a lower specificity; weak-and-independent signals are more easily to be misincluded.
+
+
+
+
+
+

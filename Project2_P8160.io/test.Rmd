@@ -1,0 +1,213 @@
+---
+title: "Simulation dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    theme:
+      bg: "#9bddff"
+      fg: "#00334d" 
+      primary: "#e9f8ff"
+      base_font:
+        google: Prompt
+      code_font:
+        google: JetBrains Mono
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(plotly)
+# Install thematic and un-comment for themed static plots (i.e., ggplot2)
+# thematic::thematic_rmd()
+load("mse_sen224.RData")
+load("mse_spe224.RData")
+```
+
+Column {data-width=650 .tabset}
+-----------------------------------------------------------------------
+
+### Sensitivity
+
+```{r,echo=FALSE}
+mse_sen_new <- mse_sen|>  
+  pivot_longer(
+      c('SLASSOsen','WCLASSOsen','WILASSOsen',
+      'SFSsen','WCFSsen','WIFSsen'), 
+       names_to = "Sensitivity", values_to = "values")
+data_sen<- data.frame(
+  x = mse_sen_new$c,
+  y = mse_sen_new$values,
+  group = factor(rep(1:6, 8)),
+  color = rep(c("SLASSOsen", "WCLASSOsen", "WILASSOsen", "SFSsen", "WCFSsen", "WIFSsen"), 8),
+  linetype = rep(c("solid", "solid","solid","dotted","dotted","dotted"), 8)
+)
+
+# Plot
+p2 <- ggplot(data_sen, aes(x=x, y=y, color=color, group=group, linetype=linetype)) +
+  geom_smooth(size=1,se = FALSE) +
+  scale_color_manual(values=c("SLASSOsen"="blue", "SFSsen"="blue",
+                              "WCLASSOsen"="green", "WCFSsen"="green",
+                              "WILASSOsen"="red", "WIFSsen"="red")) +
+  labs(title="Plot of Sensitivity by Lasso and Forward selection", x="c-value(threshold)", y="sensitivity")+
+  scale_linetype_manual(values=c("solid"="solid", "dotted"="dotted")) + 
+  theme_minimal() +
+  theme(legend.title=element_blank())+
+  guides(size=FALSE)
+
+ p_plotly2 <- ggplotly(p2)
+ p_plotly2
+
+```
+ 
+
+
+
+### Specificity
+
+
+```{r,echo=FALSE}
+mse_spe_new <- mse_spe|>  
+  pivot_longer(
+       c('SLASSOspe','WCLASSOspe','WILASSOspe',
+      'SFSspe','WCFSspe','WIFSspe'), 
+       names_to = "Specificity", values_to = "values")
+data_spe_new<- data.frame(
+  x = mse_spe_new$c,
+  y = mse_spe_new$values,
+  group = factor(rep(1:6, 8)),
+  color = rep(c("SLASSOspe", "WCLASSOspe", "WILASSOspe", "SFSspe", "WCFSspe", "WIFSspe"), 8),
+  linetype = rep(c("solid", "solid","solid","dotted","dotted","dotted"), 8)
+)
+
+# Plot
+p3 <- ggplot(data_spe_new, aes(x=x, y=y, color=color, group=group, linetype=linetype)) +
+  geom_smooth(size=1,se = FALSE) +
+  scale_color_manual(values=c("SLASSOspe"="blue", "SFSspe"="blue",
+                              "WCLASSOspe"="green", "WCFSspe"="green",
+                              "WILASSOspe"="red", "WIFSspe"="red")) +
+    labs(title="Plot of Specificity by Lasso and Forward selection", x="c-value(threshold)", y="specificity")+
+  scale_linetype_manual(values=c("solid"="solid", "dotted"="dotted")) + 
+  theme_minimal() +
+  theme(legend.title=element_blank())+
+  guides(size=FALSE)
+
+p_plotly3 <- ggplotly(p3)
+p_plotly3
+
+```
+
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Other Information
+
+
+Abbreviation：
+
+S - Strong signals
+
+WC - Weak but correlated signals
+
+WI - Weak and independent signals
+
+FS - Forward selection
+
+spe - specificity
+
+sen - sensitivity
+
+
+eg: 
+'SLASSOspe' stands for the specificity of selecting strong signals by LASSO.
+
+Definition of strong signals --- 
+
+$$S_1=\{j:|\beta_j|>c\sqrt{log (p) / n},\mbox{ some } c>0,  1\le j \le p\}$$
+
+Definition of weak-but-correlated signals  ---
+
+$$S_2=\{j: 0<|\beta_j|\le c\sqrt{log (p) / n},\mbox{ some } c>0, \mbox{corr}(X_j, X_j')\ne 0, \mbox{for some } j'\in S_1,  1\le j \le p\}$$
+
+
+
+Definition of weak-and-independent signals  ---
+
+$$S_3=\{j: 0<|\beta_j|\le c\sqrt{log (p) / n},\mbox{ some } c>0, \mbox{corr}(X_j, X_j')= 0, \mbox{for all } j'\in S_1,  1\le j \le p\}$$
+
+$$\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2$$
+
+### Beta Generation
+
+```{r, include=FALSE}
+n <- 1000
+# 20+20+20
+p <- 60 
+
+# thresh1
+thr <- sqrt(log(p)/n)
+thr
+
+# beta  
+##positiveandnegativeforthefirsthalf
+ b.true1.strong<-c(rep(thr+1,5),rep(-thr-1,5))
+ b.true1.weak1 <-c(rep(thr/2,5),rep(-thr/2,5))
+ b.true1.weak2 <-c(rep(thr/2,5),rep(-thr/2,5))
+##zeroforthesecondhalf
+ b.true0<-rep(0,p/2)
+
+b.true1       <- c(b.true1.strong,b.true1.weak1,b.true1.weak2,b.true0)
+
+
+# beta  
+
+
+## positive and negative for the first half
+b.true1.strong <- c(thr+abs(rnorm(5,thr,1)),-thr-abs(rnorm(5,thr,1)))
+b.true1.weak1   <- runif(10,-thr,thr)
+b.true1.weak2   <- runif(10,-thr,thr)
+## zero for the second half
+b.true0 <- rep(0,p/2)
+## combine them together
+b.true2       <- c(b.true1.strong,b.true1.weak1,b.true1.weak2,b.true0)
+
+```
+
+
+
+```{r, echo=FALSE}
+
+index<-c(1:60)
+group1<-rep("Group1",60)
+group2<-rep("Group2",60)
+B.true1<-cbind(b.true1,index,group1)
+B.true2<-cbind(b.true2,index,group2)
+B<-rbind(B.true1,B.true2)
+
+
+# Assuming B is correctly created and is a data frame
+B <- data.frame(B) # Ensuring B is a data frame
+colnames(B) <- c("Value", "Index", "Group") # Naming columns for clarity
+
+# Converting the appropriate columns to the correct data types
+B$Index <- as.numeric(B$Index)
+B$Group <- as.factor(B$Group)
+B$Value <- as.numeric(B$Value)
+
+
+
+# Assuming B is your data frame set up correctly
+
+# Create a ggplot2 object
+p1 <- ggplot(B, aes(x = Index, y = Value, color = Group)) +
+  geom_point() + # Using points to plot the data
+  labs(title = "Plot of B.true1 and B.true2", x = "Index", y = "Beta Value") +
+  scale_color_manual(values = c("Group1" = "blue", "Group2" = "red")) # Customizing colors
+
+# Convert the ggplot2 object to a plotly object
+p_plotly1 <- ggplotly(p1)
+p_plotly1
+
+```
+
